@@ -1,5 +1,5 @@
 ---
-description: Analyze user intent and generate DSL, PNG, and Markdown diagram files for understanding files or projects. Creates all files in a single timestamped user directory. Supports Mermaid, PlantUML, Graphviz, ZenUML, DrawIO, Markmap, and others. Uses local tools when available, with Kroki.io service as fallback.
+description: Analyze user intent and generate DSL, PNG, and Markdown diagram files for understanding files or projects. Creates all files in a single timestamped user directory. Supports Mermaid, PlantUML, Graphviz, ZenUML, DrawIO, Markmap, and others. Uses local tools when available, with official Kroki.io service for reliable diagram generation.
 scripts:
   sh: scripts/bash/diagram-dsl-to-image.sh
   ps: scripts/powershell/diagram-dsl-to-image.ps1

@@ -77,13 +77,38 @@ encode_diagram_source() {
     
     # Create temporary file with the source content
     local temp_input=$(mktemp)
+    local temp_output=$(mktemp)
     echo -n "$source" > "$temp_input"
     
-    # Compress using gzip, then base64 encode and make URL-safe
-    local compressed=$(gzip -c "$temp_input" | base64 -w 0 | tr '+/' '-_' | tr -d '=')
+    # Compress using zlib (deflate), then base64 encode and make URL-safe
+    # Using Python for better compatibility with Kroki's expectations
+    if command_exists python3; then
+        local compressed=$(python3 -c "
+import sys
+import base64
+import zlib
+data = sys.argv[1].encode('utf-8')
+compressed = zlib.compress(data)[2:-4]  # Remove zlib headers
+result = base64.urlsafe_b64encode(compressed).decode('ascii')
+print(result.replace('=', ''))
+" "$source")
+    elif command_exists python; then
+        local compressed=$(python -c "
+import sys
+import base64
+import zlib
+data = sys.argv[1].encode('utf-8')
+compressed = zlib.compress(data)[2:-4]  # Remove zlib headers
+result = base64.urlsafe_b64encode(compressed).decode('ascii')
+print(result.replace('=', ''))
+" "$source")
+    else
+        # Fallback to gzip if python is not available
+        local compressed=$(gzip -c "$temp_input" | base64 -w 0 | tr '+/' '-_' | tr -d '=')
+    fi
     
     # Clean up
-    rm "$temp_input"
+    rm -f "$temp_input" "$temp_output"
     
     echo "$compressed"
 }
@@ -138,8 +163,7 @@ convert_dsl_to_image_kroki() {
     print_info "Encoded diagram source length: ${#encoded_value}"
     
     # Create the Kroki URL
-    #local base_url="https://kroki.io"
-    local base_url="http://localhost:8000"
+    local base_url="https://kroki.io"
     local kroki_url="${base_url}/${diagram_type}/${output_format}/${encoded_value}"
     
     print_info "Generated Kroki URL: ${kroki_url:0:80}..."
