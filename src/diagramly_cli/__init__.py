@@ -1064,18 +1064,11 @@ def init(
 
     steps_lines.append(f"{step_num}. Start using slash commands with your AI agent:")
 
-    steps_lines.append("   2.1 [cyan]/diagramlykit.diagram[/] - Generate diagrams from your descriptions")
+    steps_lines.append("   [cyan]/diagramlykit.diagram[/] - Generate diagrams from your descriptions")
 
     steps_panel = Panel("\n".join(steps_lines), title="Next Steps", border_style="cyan", padding=(1,2))
     console.print()
     console.print(steps_panel)
-
-    enhancement_lines = [
-       
-    ]
-    enhancements_panel = Panel("\n".join(enhancement_lines), title="Enhancement Commands", border_style="cyan", padding=(1,2))
-    console.print()
-    console.print(enhancements_panel)
 
 @app.command()
 def check():
