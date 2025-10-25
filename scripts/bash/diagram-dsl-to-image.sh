@@ -46,6 +46,7 @@ show_help() {
     echo "  - Graphviz (.dot, .gv)"
     echo "  - ZenUML (.zenuml)"
     echo "  - DrawIO (.drawio, .xml)"
+    echo "  - Markmap (.mm, .markmap)"
     echo ""
     echo "Examples:"
     echo "  $0 flowchart.mmd png ./images"
@@ -70,7 +71,112 @@ get_filename_without_ext() {
     echo "${filename%.*}"
 }
 
-# Main conversion function
+# Function to encode diagram source using deflate compression (similar to JavaScript version)
+encode_diagram_source() {
+    local source="$1"
+    
+    # Create temporary file with the source content
+    local temp_input=$(mktemp)
+    echo -n "$source" > "$temp_input"
+    
+    # Compress using gzip, then base64 encode and make URL-safe
+    local compressed=$(gzip -c "$temp_input" | base64 -w 0 | tr '+/' '-_' | tr -d '=')
+    
+    # Clean up
+    rm "$temp_input"
+    
+    echo "$compressed"
+}
+
+# Function to determine diagram type from file extension
+get_diagram_type_from_extension() {
+    local filepath="$1"
+    local extension=$(echo "${filepath##*.}" | tr '[:upper:]' '[:lower:]')
+    
+    case "$extension" in
+        mmd|mermaid) echo "mermaid" ;;
+        zenuml) echo "zenuml" ;;
+        puml|plantuml|pu) echo "plantuml" ;;
+        drawio|xml) echo "drawio" ;;
+        mm|markmap) echo "markmap" ;;
+        dot|gv) echo "graphviz" ;;
+        *) 
+            print_error "Unsupported file extension: $extension"
+            return 1
+            ;;
+    esac
+}
+
+# Function to convert DSL to image using Kroki.io service
+convert_dsl_to_image_kroki() {
+    local input_file="$1"
+    local output_format="$2"
+    local output_dir="$3"
+    local filename=$(get_filename_without_ext "$input_file")
+    
+    # Create output directory if it doesn't exist
+    mkdir -p "$output_dir"
+    
+    local output_path="${output_dir}/${filename}.${output_format}"
+    
+    print_info "Converting $input_file to $output_path using Kroki.io service"
+    
+    # Get diagram type from extension
+    local diagram_type
+    diagram_type=$(get_diagram_type_from_extension "$input_file")
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
+    
+    # Read DSL content from file
+    local diagram_dsl
+    diagram_dsl=$(cat "$input_file")
+    
+    # Encode the diagram source
+    local encoded_value
+    encoded_value=$(encode_diagram_source "$diagram_dsl")
+    print_info "Encoded diagram source length: ${#encoded_value}"
+    
+    # Create the Kroki URL
+    local base_url="https://kroki.io"
+    local kroki_url="${base_url}/${diagram_type}/${output_format}/${encoded_value}"
+    
+    print_info "Generated Kroki URL: ${kroki_url:0:80}..."
+    
+    # Download the image from Kroki with retry
+    local retry_count=3
+    local success=false
+    
+    for i in $(seq 1 $retry_count); do
+        print_info "Making request to Kroki service (attempt $i)..."
+        if curl -s -f -L -o "$output_path" "$kroki_url"; then
+            success=true
+            break
+        else
+            print_warn "Kroki request failed (attempt $i)"
+            if [ $i -lt $retry_count ]; then
+                print_info "Retrying in 1 second..."
+                sleep 1
+            fi
+        fi
+    done
+    
+    if [ "$success" = true ]; then
+        if [[ -f "$output_path" && -s "$output_path" ]]; then
+            print_info "Successfully downloaded image to $output_path"
+            print_info "File size: $(du -h "$output_path" | cut -f1)"
+            return 0
+        else
+            print_error "Conversion failed - output file was not created or is empty"
+            return 1
+        fi
+    else
+        print_error "Failed to convert diagram after $retry_count attempts"
+        return 1
+    fi
+}
+
+# Main conversion function - first tries local tools, falls back to Kroki.io
 convert_dsl_to_image() {
     local input_file="$1"
     local output_format="$2"
@@ -91,8 +197,8 @@ convert_dsl_to_image() {
                 print_info "Using Mermaid CLI (mmdc) to convert $input_file"
                 mmdc -i "$input_file" -o "$output_path" -w 1200
             else
-                print_error "Mermaid CLI (mmdc) not found. Install with 'npm install -g @mermaid-js/mermaid-cli'"
-                exit 1
+                print_warn "Mermaid CLI (mmdc) not found, falling back to Kroki.io service"
+                convert_dsl_to_image_kroki "$input_file" "$output_format" "$output_dir"
             fi
             ;;
         puml|plantuml)
@@ -103,8 +209,8 @@ convert_dsl_to_image() {
                 local generated_file="${output_dir}/$(get_filename_without_ext "$input_file").${output_format}"
                 mv "${output_dir}/$(get_filename_without_ext "$input_file").${output_format}" "$output_path" 2>/dev/null || true
             else
-                print_error "PlantUML not found. Install with 'brew install plantuml' or download from http://plantuml.com/download"
-                exit 1
+                print_warn "PlantUML not found, falling back to Kroki.io service"
+                convert_dsl_to_image_kroki "$input_file" "$output_format" "$output_dir"
             fi
             ;;
         dot|gv)
@@ -112,28 +218,25 @@ convert_dsl_to_image() {
                 print_info "Using Graphviz (dot) to convert $input_file"
                 dot -T${output_format} "$input_file" -o "$output_path"
             else
-                print_error "Graphviz (dot) not found. Install with 'brew install graphviz'"
-                exit 1
+                print_warn "Graphviz (dot) not found, falling back to Kroki.io service"
+                convert_dsl_to_image_kroki "$input_file" "$output_format" "$output_dir"
             fi
             ;;
         zenuml)
-            print_warn "ZenUML conversion not directly supported. Please use the diagramly-kit library to convert."
-            print_info "Looking for ZenUML in the project..."
-            if [[ -f "./dist/index.js" ]]; then
-                node ./dist/index.js convert-zenuml "$input_file" "$output_path"
-            else
-                print_error "diagramly-kit not found. Please install and build the project first."
-                exit 1
-            fi
+            print_warn "ZenUML conversion not directly supported by local tools, using Kroki.io service"
+            convert_dsl_to_image_kroki "$input_file" "$output_format" "$output_dir"
             ;;
         drawio|xml)
-            print_warn "DrawIO conversion not directly supported. Please use draw.io CLI or online service."
-            print_error "DrawIO to image conversion requires additional setup. Manual conversion needed."
-            exit 1
+            print_warn "DrawIO conversion not directly supported by local tools, using Kroki.io service"
+            convert_dsl_to_image_kroki "$input_file" "$output_format" "$output_dir"
+            ;;
+        mm|markmap)
+            print_warn "Markmap conversion not directly supported by local tools, using Kroki.io service"
+            convert_dsl_to_image_kroki "$input_file" "$output_format" "$output_dir"
             ;;
         *)
             print_error "Unsupported file type: $(get_file_extension "$input_file")"
-            print_info "Supported types: mmd, mermaid, puml, plantuml, dot, gv, zenuml, drawio, xml"
+            print_info "Supported types: mmd, mermaid, puml, plantuml, dot, gv, zenuml, drawio, xml, mm, markmap"
             exit 1
             ;;
     esac
@@ -169,33 +272,7 @@ if [[ "$OUTPUT_FORMAT" != "png" ]] && [[ "$OUTPUT_FORMAT" != "svg" ]] && [[ "$OU
     OUTPUT_FORMAT="png"
 fi
 
-# Validate required tools based on file type
-EXTENSION=$(get_file_extension "$INPUT_FILE")
-case "$EXTENSION" in
-    mmd|mermaid)
-        if ! command_exists mmdc; then
-            print_error "Mermaid CLI (mmdc) is required for .mmd/.mermaid files"
-            print_info "Install with: npm install -g @mermaid-js/mermaid-cli"
-            exit 1
-        fi
-        ;;
-    puml|plantuml)
-        if ! command_exists plantuml; then
-            print_error "PlantUML is required for .puml/.plantuml files"
-            print_info "Install with: brew install plantuml"
-            exit 1
-        fi
-        ;;
-    dot|gv)
-        if ! command_exists dot; then
-            print_error "Graphviz (dot) is required for .dot/.gv files"
-            print_info "Install with: brew install graphviz"
-            exit 1
-        fi
-        ;;
-esac
-
-# Perform the conversion
+# Perform the conversion (validates internally)
 convert_dsl_to_image "$INPUT_FILE" "$OUTPUT_FORMAT" "$OUTPUT_DIR"
 
 print_info "Conversion completed successfully!"

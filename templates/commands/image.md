@@ -1,5 +1,5 @@
 ---
-description: Generate an image from DSL diagram code based on user requirements. Supports Mermaid, PlantUML, Graphviz, ZenUML, DrawIO, and others.
+description: Generate an image from DSL diagram code based on user requirements. Supports Mermaid, PlantUML, Graphviz, ZenUML, DrawIO, Markmap, and others. Uses local tools when available, with Kroki.io service as fallback.
 scripts:
   sh: scripts/bash/diagram-dsl-to-image.sh
   ps: scripts/powershell/diagram-dsl-to-image.ps1
@@ -132,7 +132,8 @@ Follow this execution flow:
 
 - **Script Execution Error Handling**:
   - If DSL generation fails, identify the specific error and return to step 3 with specific correction needed
-  - If image conversion tool is missing, provide installation instructions for the specific tool:
+  - If image conversion tool is missing, the bash script will automatically fall back to Kroki.io service
+  - If image conversion tool is missing, provide installation instructions for the specific tool as additional option:
     - Mermaid: `npm install -g @mermaid-js/mermaid-cli`
     - PlantUML: `brew install plantuml` (macOS) or download from http://plantuml.com/download
     - Graphviz: `brew install graphviz` (macOS) or install graphviz package (Linux/Windows)
@@ -141,7 +142,7 @@ Follow this execution flow:
     - Check file permissions: Ensure the DSL file is readable
     - Check tool installation: Verify the conversion tool is properly installed and accessible
     - Retry the conversion with potential fixes based on error message
-  - For PowerShell script failures, consider using the fallback Kroki.io service approach if local tools aren't available
+  - Both bash and PowerShell scripts now use Kroki.io service as fallback when local tools aren't available
 
 - **Output Validation**:
   - After script execution, verify the image file was created in the expected output directory (.diagramly/images/)
