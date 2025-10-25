@@ -52,9 +52,10 @@ Follow this execution flow:
 
 5. **Generate DSL File**: Save the generated DSL code to the timestamped directory with the naming pattern:
    - Place the file in the single directory: `.diagramly/user/{{yyyy-MM-dd-HHMMSSff}}/`
-   - Name the DSL file using the pattern: `{{diagram_type}}-{{simple_description}}.dsl`
-   - Use the actual detected diagram type (mermaid, plantuml, graphviz, etc.) and simple description from user intent
-   - Example: `.diagramly/user/2025-01-15-14302256/flowchart-user-journey.dsl`
+   - Name the DSL file using the pattern: `{{diagram_type}}-{{simple_description}}.{{extension}}`
+   - Use correct file extensions as supported by the scripts: `.mmd`/`.mermaid` (Mermaid), `.puml`/`.plantuml` (PlantUML), `.dot`/`.gv` (Graphviz), `.zenuml` (ZenUML), `.drawio`/`.xml` (DrawIO), `.mm`/`.markmap` (Markmap)
+   - The extension must match the actual diagram type (mermaid, plantuml, graphviz, etc.) and be from the supported list
+   - Example: `.diagramly/user/2025-01-15-14302256/flowchart-user-journey.mmd`
 
 6. **Convert to Image**: Execute the appropriate script to convert the DSL file to an image in the same directory (PNG creation MUST ONLY use the designated scripts):
    - Only use the scripts defined in the header: `scripts/bash/diagram-dsl-to-image.sh` (for sh) or `scripts/powershell/diagram-dsl-to-image.ps1` (for ps)
@@ -62,7 +63,8 @@ Follow this execution flow:
    - OUTPUT_FORMAT: "png" 
    - OUTPUT_DIR: Same directory as the DSL file (the timestamped directory)
    - Name the image file using the pattern: `{{diagram_type}}-{{simple_description}}.png`
-   - Example: `{SCRIPT} .diagramly/user/2025-01-15-14302256/flowchart-user-journey.dsl png .diagramly/user/2025-01-15-14302256/`
+   - The DSL file must have a supported extension (.mmd, .mermaid, .puml, .plantuml, .dot, .gv, .zenuml, .drawio, .xml, .mm, .markmap)
+   - Example: `{SCRIPT} .diagramly/user/2025-01-15-14302256/flowchart-user-journey.mmd png .diagramly/user/2025-01-15-14302256/`
    - Wait for successful completion before proceeding
 
 7. **Generate Documentation File**: Create a markdown file in the same directory that documents the diagram:
@@ -123,11 +125,11 @@ Follow this execution flow:
 
 ### For Bash (sh) users:
 - Command: `{SCRIPT} [input_file] [output_format] [output_dir]`
-- Example: `{SCRIPT} .diagramly/user/2025-01-15-14302256/flowchart-user-journey.dsl png .diagramly/user/2025-01-15-14302256/`
+- Example: `{SCRIPT} .diagramly/user/2025-01-15-14302256/flowchart-user-journey.mmd png .diagramly/user/2025-01-15-14302256/`
 
 ### For PowerShell (ps) users:
 - Command: `{SCRIPT} -InputFile "[input_file]" [-OutputFormat "[output_format]"] [-OutputDir "[output_dir]"]`
-- Example: `{SCRIPT} -InputFile ".diagramly/user/2025-01-15-14302256/flowchart-user-journey.dsl" -OutputFormat "png" -OutputDir ".diagramly/user/2025-01-15-14302256/"`
+- Example: `{SCRIPT} -InputFile ".diagramly/user/2025-01-15-14302256/flowchart-user-journey.mmd" -OutputFormat "png" -OutputDir ".diagramly/user/2025-01-15-14302256/"`
 
 ## Error Handling and Validation
 
@@ -138,14 +140,15 @@ Follow this execution flow:
   - If errors found, regenerate with corrections before proceeding
 
 - **File Creation Validation**: Ensure all three files were properly created:
-  - Verify the DSL file exists at the specified path with correct content
+  - Verify the DSL file exists at the specified path with correct content and a supported extension (.mmd, .mermaid, .puml, .plantuml, .dot, .gv, .zenuml, .drawio, .xml, .mm, .markmap)
   - Verify the PNG file exists at the specified path with valid image data
   - Verify the MD file exists at the specified path with proper documentation
   - Check that all files have content and correct extensions
 
 - **Output Validation**:
   - After script execution, verify all three files were created in the expected timestamped directory (.diagramly/user/{{yyyy-MM-dd-HHMMSSff}}/)
-  - Check that all files follow the naming convention: `{{diagram_type}}-{{simple_description}}.dsl`, `{{diagram_type}}-{{simple_description}}.png`, and `{{diagram_type}}-{{simple_description}}.md`
+  - Check that all files follow the naming convention: `{{diagram_type}}-{{simple_description}}.{{extension}}` (with supported extension), `{{diagram_type}}-{{simple_description}}.png`, and `{{diagram_type}}-{{simple_description}}.md`
+  - The DSL file must have a supported extension (.mmd, .mermaid, .puml, .plantuml, .dot, .gv, .zenuml, .drawio, .xml, .mm, .markmap)
   - Check that the image file is not zero bytes and contains valid image data
   - If image generation fails, report the issue and suggest alternatives (different output format, different diagram structure)
   - If the timestamped directory doesn't exist, create it before running the conversion script
