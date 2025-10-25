@@ -1,15 +1,11 @@
-/**
- * PlantUML Sequence Diagram Prompts
- */
-import {
-	type DiagramPromptConfig,
-	PromptTemplate,
-} from "../value-objects/prompt-config";
+# PlantUML Sequence Prompts Template
 
-/**
- * PlantUML Sequence 新建图表 Prompt
- */
-export const PLANTUML_SEQUENCE_NEW_PROMPT = `
+## Overview
+PlantUML sequence diagrams use simple syntax to create UML sequence diagrams. This template provides the standard prompts for generating and modifying PlantUML sequence diagrams.
+
+## New Diagram Prompt
+
+```
 Generate PlantUML sequence diagram DSL for the given instruction and image(if provided).
 
 PlantUML sequence diagrams use simple syntax to create UML sequence diagrams:
@@ -82,12 +78,11 @@ deactivate S
 Please generate PlantUML sequence diagram DSL based on the provided requirements.
 Make sure the DSL starts with @startuml and ends with @enduml.
 Output the DSL in a code block.
-`;
+```
 
-/**
- * PlantUML Sequence 修改图表 Prompt
- */
-export const PLANTUML_SEQUENCE_MODIFY_PROMPT = `
+## Modify Diagram Prompt
+
+```
 You are helping to modify an existing PlantUML sequence diagram.
 
 Current diagram:
@@ -99,16 +94,13 @@ Modification request:
 Please update the PlantUML sequence diagram DSL according to the request while maintaining the existing structure and style where appropriate.
 Make sure the output starts with @startuml and ends with @enduml.
 Output the complete modified DSL in a code block.
-`;
+```
 
-/**
- * PlantUML Sequence Prompt 配置
- */
-export const PLANTUML_SEQUENCE_CONFIG: DiagramPromptConfig = {
-	languageKey: "LANG_PLANTUML",
-	subTypeKey: "SEQUENCE",
-	prompts: {
-		[PromptTemplate.NEW]: PLANTUML_SEQUENCE_NEW_PROMPT,
-		[PromptTemplate.MODIFY]: PLANTUML_SEQUENCE_MODIFY_PROMPT,
-	},
-};
+## Configuration
+
+- **Language Key**: LANG_PLANTUML
+- **SubType Key**: SEQUENCE
+- **Template Type**: DSL
+- **Prompts Available**:
+  - NEW: For creating new PlantUML sequence diagrams from scratch
+  - MODIFY: For modifying existing PlantUML sequence diagrams

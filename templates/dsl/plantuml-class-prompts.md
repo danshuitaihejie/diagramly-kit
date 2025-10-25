@@ -1,15 +1,11 @@
-/**
- * PlantUML Class Diagram Prompts
- */
-import {
-	type DiagramPromptConfig,
-	PromptTemplate,
-} from "../value-objects/prompt-config";
+# PlantUML Class Prompts Template
 
-/**
- * PlantUML Class 新建图表 Prompt
- */
-export const PLANTUML_CLASS_NEW_PROMPT = `
+## Overview
+PlantUML class diagrams use simple syntax to create UML class diagrams. This template provides the standard prompts for generating and modifying PlantUML class diagrams.
+
+## New Diagram Prompt
+
+```
 Generate PlantUML class diagram DSL for the given instruction and image(if provided).
 
 PlantUML class diagrams use simple syntax to create UML class diagrams:
@@ -76,12 +72,11 @@ Animal <|-- Cat
 Please generate PlantUML class diagram DSL based on the provided requirements.
 Make sure the DSL starts with @startuml and ends with @enduml.
 Output the DSL in a code block.
-`;
+```
 
-/**
- * PlantUML Class 修改图表 Prompt
- */
-export const PLANTUML_CLASS_MODIFY_PROMPT = `
+## Modify Diagram Prompt
+
+```
 You are helping to modify an existing PlantUML class diagram.
 
 Current diagram:
@@ -93,16 +88,13 @@ Modification request:
 Please update the PlantUML class diagram DSL according to the request while maintaining the existing structure and style where appropriate.
 Make sure the output starts with @startuml and ends with @enduml.
 Output the complete modified DSL in a code block.
-`;
+```
 
-/**
- * PlantUML Class Prompt 配置
- */
-export const PLANTUML_CLASS_CONFIG: DiagramPromptConfig = {
-	languageKey: "LANG_PLANTUML",
-	subTypeKey: "CLASS",
-	prompts: {
-		[PromptTemplate.NEW]: PLANTUML_CLASS_NEW_PROMPT,
-		[PromptTemplate.MODIFY]: PLANTUML_CLASS_MODIFY_PROMPT,
-	},
-};
+## Configuration
+
+- **Language Key**: LANG_PLANTUML
+- **SubType Key**: CLASS
+- **Template Type**: DSL
+- **Prompts Available**:
+  - NEW: For creating new PlantUML class diagrams from scratch
+  - MODIFY: For modifying existing PlantUML class diagrams

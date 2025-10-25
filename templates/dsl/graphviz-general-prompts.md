@@ -1,15 +1,11 @@
-/**
- * Graphviz General Graph Prompts
- */
-import {
-	type DiagramPromptConfig,
-	PromptTemplate,
-} from "../value-objects/prompt-config";
+# Graphviz General Prompts Template
 
-/**
- * Graphviz General 新建图表 Prompt
- */
-export const GRAPHVIZ_GENERAL_NEW_PROMPT = `
+## Overview
+Graphviz is a graph visualization software that uses DOT language to create both directed (digraph) and undirected (graph) diagrams. This template provides the standard prompts for generating and modifying Graphviz diagrams.
+
+## New Diagram Prompt
+
+```
 Generate Graphviz DOT language graph for the given instruction and image(if provided).
 
 Graphviz DOT language can be used to create both directed (digraph) and undirected (graph) graphs.
@@ -64,12 +60,11 @@ digraph ProcessFlow {
 
 Please generate the appropriate Graphviz DOT code (digraph or graph) based on the user's request.
 Output the DOT code in a code block.
-`;
+```
 
-/**
- * Graphviz General 修改图表 Prompt
- */
-export const GRAPHVIZ_GENERAL_MODIFY_PROMPT = `
+## Modify Diagram Prompt
+
+```
 You are helping to modify an existing Graphviz graph.
 
 Current diagram:
@@ -80,16 +75,13 @@ Modification request:
 
 Please update the Graphviz DOT code according to the request while maintaining the existing structure and style where appropriate.
 Output the complete modified DOT code in a code block.
-`;
+```
 
-/**
- * Graphviz General Prompt 配置
- */
-export const GRAPHVIZ_GENERAL_CONFIG: DiagramPromptConfig = {
-	languageKey: "LANG_GRAPHVIZ",
-	subTypeKey: "GENERAL",
-	prompts: {
-		[PromptTemplate.NEW]: GRAPHVIZ_GENERAL_NEW_PROMPT,
-		[PromptTemplate.MODIFY]: GRAPHVIZ_GENERAL_MODIFY_PROMPT,
-	},
-};
+## Configuration
+
+- **Language Key**: LANG_GRAPHVIZ
+- **SubType Key**: GENERAL
+- **Template Type**: DSL
+- **Prompts Available**:
+  - NEW: For creating new Graphviz diagrams from scratch
+  - MODIFY: For modifying existing Graphviz diagrams

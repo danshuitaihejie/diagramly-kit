@@ -1,15 +1,11 @@
-/**
- * PlantUML Use Case Diagram Prompts
- */
-import {
-	type DiagramPromptConfig,
-	PromptTemplate,
-} from "../value-objects/prompt-config";
+# PlantUML Use Case Prompts Template
 
-/**
- * PlantUML Use Case 新建图表 Prompt
- */
-export const PLANTUML_USECASE_NEW_PROMPT = `
+## Overview
+PlantUML use case diagrams use simple syntax to create UML use case diagrams. This template provides the standard prompts for generating and modifying PlantUML use case diagrams.
+
+## New Diagram Prompt
+
+```
 Generate PlantUML use case diagram DSL for the given instruction and image(if provided).
 
 PlantUML use case diagrams use simple syntax to create UML use case diagrams:
@@ -75,12 +71,11 @@ UC3 .> UC5 : <<include>>
 Please generate PlantUML use case diagram DSL based on the provided requirements.
 Make sure the DSL starts with @startuml and ends with @enduml.
 Output the DSL in a code block.
-`;
+```
 
-/**
- * PlantUML Use Case 修改图表 Prompt
- */
-export const PLANTUML_USECASE_MODIFY_PROMPT = `
+## Modify Diagram Prompt
+
+```
 You are helping to modify an existing PlantUML use case diagram.
 
 Current diagram:
@@ -92,16 +87,13 @@ Modification request:
 Please update the PlantUML use case diagram DSL according to the request while maintaining the existing structure and style where appropriate.
 Make sure the output starts with @startuml and ends with @enduml.
 Output the complete modified DSL in a code block.
-`;
+```
 
-/**
- * PlantUML Use Case Prompt 配置
- */
-export const PLANTUML_USECASE_CONFIG: DiagramPromptConfig = {
-	languageKey: "LANG_PLANTUML",
-	subTypeKey: "USECASE",
-	prompts: {
-		[PromptTemplate.NEW]: PLANTUML_USECASE_NEW_PROMPT,
-		[PromptTemplate.MODIFY]: PLANTUML_USECASE_MODIFY_PROMPT,
-	},
-};
+## Configuration
+
+- **Language Key**: LANG_PLANTUML
+- **SubType Key**: USECASE
+- **Template Type**: DSL
+- **Prompts Available**:
+  - NEW: For creating new PlantUML use case diagrams from scratch
+  - MODIFY: For modifying existing PlantUML use case diagrams

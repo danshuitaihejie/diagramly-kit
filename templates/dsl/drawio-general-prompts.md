@@ -1,15 +1,11 @@
-/**
- * DrawIO General Diagram Prompts
- */
-import {
-	type DiagramPromptConfig,
-	PromptTemplate,
-} from "../value-objects/prompt-config";
+# DrawIO General Prompts Template
 
-/**
- * DrawIO General 新建图表 Prompt
- */
-export const DRAWIO_GENERAL_NEW_PROMPT = `
+## Overview
+DrawIO is a diagramming tool that uses XML format (mxGraphModel) to create professional diagrams. This template provides the standard prompts for generating and modifying DrawIO diagrams.
+
+## New Diagram Prompt
+
+```
 # DrawIO XML Generation Prompt
 
 Generate DrawIO XML diagram based on the provided instruction and image (if provided).
@@ -121,12 +117,11 @@ Return your response as a JSON object with this exact structure:
 
 Ensure the "code" field contains only the raw mxGraphModel XML without any code block markers or additional formatting.
 
-`;
+```
 
-/**
- * DrawIO General 修改图表 Prompt
- */
-export const DRAWIO_GENERAL_MODIFY_PROMPT = `
+## Modify Diagram Prompt
+
+```
 You are an expert at modifying DrawIO diagrams. Analyze the current diagram and apply the requested changes professionally.
 
 **Current DrawIO XML:**
@@ -180,16 +175,13 @@ Return your response as a JSON object with this exact structure:
 \`\`\`
 
 Ensure the "code" field contains only the raw mxGraphModel XML without any code block markers or additional formatting.
-`;
+```
 
-/**
- * DrawIO General Prompt 配置
- */
-export const DRAWIO_GENERAL_CONFIG: DiagramPromptConfig = {
-	languageKey: "LANG_DRAWIO",
-	subTypeKey: "GENERAL",
-	prompts: {
-		[PromptTemplate.NEW]: DRAWIO_GENERAL_NEW_PROMPT,
-		[PromptTemplate.MODIFY]: DRAWIO_GENERAL_MODIFY_PROMPT,
-	},
-};
+## Configuration
+
+- **Language Key**: LANG_DRAWIO
+- **SubType Key**: GENERAL
+- **Template Type**: DSL
+- **Prompts Available**:
+  - NEW: For creating new DrawIO diagrams from scratch
+  - MODIFY: For modifying existing DrawIO diagrams

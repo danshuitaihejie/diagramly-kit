@@ -1,15 +1,11 @@
-/**
- * Mermaid Mindmap Prompts
- */
-import {
-	type DiagramPromptConfig,
-	PromptTemplate,
-} from "../value-objects/prompt-config";
+# Mermaid Mindmap Prompts Template
 
-/**
- * Mermaid Mindmap 新建图表 Prompt
- */
-export const MERMAID_MINDMAP_NEW_PROMPT = `
+## Overview
+Mermaid mindmaps use simple syntax to create hierarchical diagrams. This template provides the standard prompts for generating and modifying Mermaid mindmaps.
+
+## New Diagram Prompt
+
+```
 Based on information user provided, read the content and image, convert the information to mermaid mindmap diagram in mermaid code.
 
 - In the image, only read the main chart or diagram, ignore other words around the main diagram
@@ -29,12 +25,11 @@ mindmap
       [Node Name bb]
       [Node Name bd]
 ----------------------------------
-`;
+```
 
-/**
- * Mermaid Mindmap 修改图表 Prompt
- */
-export const MERMAID_MINDMAP_MODIFY_PROMPT = `
+## Modify Diagram Prompt
+
+```
 You are helping to modify an existing Mermaid mindmap diagram.
 
 Current diagram:
@@ -45,16 +40,13 @@ Modification request:
 
 Please update the Mermaid mindmap DSL according to the request while maintaining the existing structure and style where appropriate.
 Output the complete modified DSL in a code block.
-`;
+```
 
-/**
- * Mermaid Mindmap Prompt 配置
- */
-export const MERMAID_MINDMAP_CONFIG: DiagramPromptConfig = {
-	languageKey: "LANG_MERMAID",
-	subTypeKey: "MINDMAP",
-	prompts: {
-		[PromptTemplate.NEW]: MERMAID_MINDMAP_NEW_PROMPT,
-		[PromptTemplate.MODIFY]: MERMAID_MINDMAP_MODIFY_PROMPT,
-	},
-};
+## Configuration
+
+- **Language Key**: LANG_MERMAID
+- **SubType Key**: MINDMAP
+- **Template Type**: DSL
+- **Prompts Available**:
+  - NEW: For creating new Mermaid mindmaps from scratch
+  - MODIFY: For modifying existing Mermaid mindmaps

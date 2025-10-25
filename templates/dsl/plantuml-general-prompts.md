@@ -1,15 +1,11 @@
-/**
- * PlantUML General Diagram Prompts
- */
-import {
-	type DiagramPromptConfig,
-	PromptTemplate,
-} from "../value-objects/prompt-config";
+# PlantUML General Prompts Template
 
-/**
- * PlantUML General 新建图表 Prompt
- */
-export const PLANTUML_GENERAL_NEW_PROMPT = `
+## Overview
+PlantUML is a versatile component that allows you to create various types of diagrams from a simple textual description. This template provides the standard prompts for generating and modifying general PlantUML diagrams.
+
+## New Diagram Prompt
+
+```
 Generate PlantUML DSL for the given instruction and image(if provided).
 
 PlantUML is a versatile component that allows you to create various types of diagrams from a simple textual description.
@@ -48,12 +44,11 @@ Animal <|-- Dog
 Please generate the appropriate PlantUML DSL based on the user's request.
 Make sure the DSL starts with @startuml and ends with @enduml.
 Output the DSL in a code block.
-`;
+```
 
-/**
- * PlantUML General 修改图表 Prompt
- */
-export const PLANTUML_GENERAL_MODIFY_PROMPT = `
+## Modify Diagram Prompt
+
+```
 You are helping to modify an existing PlantUML diagram.
 
 Current diagram:
@@ -65,16 +60,13 @@ Modification request:
 Please update the PlantUML DSL according to the request while maintaining the existing structure and style where appropriate.
 Make sure the output starts with @startuml and ends with @enduml.
 Output the complete modified DSL in a code block.
-`;
+```
 
-/**
- * PlantUML General Prompt 配置
- */
-export const PLANTUML_GENERAL_CONFIG: DiagramPromptConfig = {
-	languageKey: "LANG_PLANTUML",
-	subTypeKey: "GENERAL",
-	prompts: {
-		[PromptTemplate.NEW]: PLANTUML_GENERAL_NEW_PROMPT,
-		[PromptTemplate.MODIFY]: PLANTUML_GENERAL_MODIFY_PROMPT,
-	},
-};
+## Configuration
+
+- **Language Key**: LANG_PLANTUML
+- **SubType Key**: GENERAL
+- **Template Type**: DSL
+- **Prompts Available**:
+  - NEW: For creating new general PlantUML diagrams from scratch
+  - MODIFY: For modifying existing general PlantUML diagrams

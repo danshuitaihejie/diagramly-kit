@@ -1,15 +1,11 @@
-/**
- * Mermaid General Diagram Prompts
- */
-import {
-	type DiagramPromptConfig,
-	PromptTemplate,
-} from "../value-objects/prompt-config";
+# Mermaid General Prompts Template
 
-/**
- * Mermaid General 新建图表 Prompt
- */
-export const MERMAID_GENERAL_NEW_PROMPT = `
+## Overview
+Mermaid is a versatile component that allows you to create various types of diagrams from a simple textual description. This template provides the standard prompts for generating and modifying general Mermaid diagrams.
+
+## New Diagram Prompt
+
+```
 Generate Mermaid DSL for the given instruction and image(if provided).
 
 Mermaid is a versatile component that allows you to create various types of diagrams from a simple textual description.
@@ -43,12 +39,11 @@ sequenceDiagram
 
 Please generate the appropriate Mermaid DSL based on the user's request.
 Output the DSL in a code block.
-`;
+```
 
-/**
- * Mermaid General 修改图表 Prompt
- */
-export const MERMAID_GENERAL_MODIFY_PROMPT = `
+## Modify Diagram Prompt
+
+```
 You are helping to modify an existing Mermaid diagram.
 
 Current diagram:
@@ -59,16 +54,13 @@ Modification request:
 
 Please update the Mermaid DSL according to the request while maintaining the existing structure and style where appropriate.
 Output the complete modified DSL in a code block.
-`;
+```
 
-/**
- * Mermaid General Prompt 配置
- */
-export const MERMAID_GENERAL_CONFIG: DiagramPromptConfig = {
-	languageKey: "LANG_MERMAID",
-	subTypeKey: "GENERAL",
-	prompts: {
-		[PromptTemplate.NEW]: MERMAID_GENERAL_NEW_PROMPT,
-		[PromptTemplate.MODIFY]: MERMAID_GENERAL_MODIFY_PROMPT,
-	},
-};
+## Configuration
+
+- **Language Key**: LANG_MERMAID
+- **SubType Key**: GENERAL
+- **Template Type**: DSL
+- **Prompts Available**:
+  - NEW: For creating new general Mermaid diagrams from scratch
+  - MODIFY: For modifying existing general Mermaid diagrams

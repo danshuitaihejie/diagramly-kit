@@ -1,15 +1,11 @@
-/**
- * Mermaid Flowchart Prompts
- */
-import {
-	type DiagramPromptConfig,
-	PromptTemplate,
-} from "../value-objects/prompt-config";
+# Mermaid Flowchart Prompts Template
 
-/**
- * Mermaid Flowchart 新建图表 Prompt
- */
-export const MERMAID_FLOWCHART_NEW_PROMPT = `
+## Overview
+Mermaid flowcharts use simple syntax to create flow diagrams. This template provides the standard prompts for generating and modifying Mermaid flowcharts.
+
+## New Diagram Prompt
+
+```
 Based on information user provided, read the content and image(if provided), convert the information to mermaid flow chart diagram in mermaid code.
 
 - First find the only and correct Starting Node
@@ -27,12 +23,11 @@ flowchart TD
 A([Node Name with Only Alphabet]) -->|Online Comments| B[Node Name in Shaped Boxes]
 
 ----------------------------------
-`;
+```
 
-/**
- * Mermaid Flowchart 修改图表 Prompt
- */
-export const MERMAID_FLOWCHART_MODIFY_PROMPT = `
+## Modify Diagram Prompt
+
+```
 You are helping to modify an existing Mermaid flowchart diagram.
 
 Current diagram:
@@ -43,16 +38,13 @@ Modification request:
 
 Please update the Mermaid flowchart DSL according to the request while maintaining the existing structure and style where appropriate.
 Output the complete modified DSL in a code block.
-`;
+```
 
-/**
- * Mermaid Flowchart Prompt 配置
- */
-export const MERMAID_FLOWCHART_CONFIG: DiagramPromptConfig = {
-	languageKey: "LANG_MERMAID",
-	subTypeKey: "FLOWCHART",
-	prompts: {
-		[PromptTemplate.NEW]: MERMAID_FLOWCHART_NEW_PROMPT,
-		[PromptTemplate.MODIFY]: MERMAID_FLOWCHART_MODIFY_PROMPT,
-	},
-};
+## Configuration
+
+- **Language Key**: LANG_MERMAID
+- **SubType Key**: FLOWCHART
+- **Template Type**: DSL
+- **Prompts Available**:
+  - NEW: For creating new Mermaid flowcharts from scratch
+  - MODIFY: For modifying existing Mermaid flowcharts

@@ -1,15 +1,11 @@
-/**
- * Mermaid Gantt Prompts
- */
-import {
-	type DiagramPromptConfig,
-	PromptTemplate,
-} from "../value-objects/prompt-config";
+# Mermaid Gantt Prompts Template
 
-/**
- * Mermaid Gantt 新建图表 Prompt
- */
-export const MERMAID_GANTT_NEW_PROMPT = `
+## Overview
+Mermaid Gantt charts use simple syntax to create project timelines. This template provides the standard prompts for generating and modifying Mermaid Gantt charts.
+
+## New Diagram Prompt
+
+```
 Generate Mermaid Gantt chart DSL for the given instruction and image(if provided).
 
 Mermaid Gantt charts use simple syntax to create project timelines:
@@ -41,12 +37,11 @@ gantt
 
 Please generate Mermaid Gantt chart DSL based on the provided requirements.
 Output the DSL in a code block.
-`;
+```
 
-/**
- * Mermaid Gantt 修改图表 Prompt
- */
-export const MERMAID_GANTT_MODIFY_PROMPT = `
+## Modify Diagram Prompt
+
+```
 You are helping to modify an existing Mermaid Gantt chart.
 
 Current diagram:
@@ -57,16 +52,13 @@ Modification request:
 
 Please update the Mermaid Gantt chart DSL according to the request while maintaining the existing structure and style where appropriate.
 Output the complete modified DSL in a code block.
-`;
+```
 
-/**
- * Mermaid Gantt Prompt 配置
- */
-export const MERMAID_GANTT_CONFIG: DiagramPromptConfig = {
-	languageKey: "LANG_MERMAID",
-	subTypeKey: "GANTT",
-	prompts: {
-		[PromptTemplate.NEW]: MERMAID_GANTT_NEW_PROMPT,
-		[PromptTemplate.MODIFY]: MERMAID_GANTT_MODIFY_PROMPT,
-	},
-};
+## Configuration
+
+- **Language Key**: LANG_MERMAID
+- **SubType Key**: GANTT
+- **Template Type**: DSL
+- **Prompts Available**:
+  - NEW: For creating new Mermaid Gantt charts from scratch
+  - MODIFY: For modifying existing Mermaid Gantt charts

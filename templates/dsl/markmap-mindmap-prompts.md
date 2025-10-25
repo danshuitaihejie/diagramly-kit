@@ -1,15 +1,11 @@
-/**
- * Markmap Mindmap Prompts
- */
-import {
-	type DiagramPromptConfig,
-	PromptTemplate,
-} from "../value-objects/prompt-config";
+# Markmap Mindmap Prompts Template
 
-/**
- * Markmap Mindmap 新建图表 Prompt
- */
-export const MARKMAP_MINDMAP_NEW_PROMPT = `
+## Overview
+Markmap uses markdown syntax to create mindmaps. This template provides the standard prompts for generating and modifying Markmap mindmaps.
+
+## New Diagram Prompt
+
+```
 Generate Markmap markdown for the given instruction and image(if provided). 
 Markmap uses markdown syntax to create mindmaps.
 
@@ -50,12 +46,11 @@ Example:
 
 Please generate Markmap markdown based on the provided requirements.
 Output the markdown in a code block.
-`;
+```
 
-/**
- * Markmap Mindmap 修改图表 Prompt
- */
-export const MARKMAP_MINDMAP_MODIFY_PROMPT = `
+## Modify Diagram Prompt
+
+```
 You are helping to modify an existing Markmap markdown diagram.
 
 Current diagram:
@@ -66,16 +61,13 @@ Modification request:
 
 Please update the Markmap markdown according to the request while maintaining the existing structure and style where appropriate.
 Output the complete modified markdown in a code block.
-`;
+```
 
-/**
- * Markmap Mindmap Prompt 配置
- */
-export const MARKMAP_MINDMAP_CONFIG: DiagramPromptConfig = {
-	languageKey: "LANG_MARKMAP",
-	subTypeKey: "MINDMAP",
-	prompts: {
-		[PromptTemplate.NEW]: MARKMAP_MINDMAP_NEW_PROMPT,
-		[PromptTemplate.MODIFY]: MARKMAP_MINDMAP_MODIFY_PROMPT,
-	},
-};
+## Configuration
+
+- **Language Key**: LANG_MARKMAP
+- **SubType Key**: MINDMAP
+- **Template Type**: DSL
+- **Prompts Available**:
+  - NEW: For creating new Markmap mindmaps from scratch
+  - MODIFY: For modifying existing Markmap mindmaps
