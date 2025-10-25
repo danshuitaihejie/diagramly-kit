@@ -138,7 +138,8 @@ convert_dsl_to_image_kroki() {
     print_info "Encoded diagram source length: ${#encoded_value}"
     
     # Create the Kroki URL
-    local base_url="https://kroki.io"
+    #local base_url="https://kroki.io"
+    local base_url="http://localhost:8000"
     local kroki_url="${base_url}/${diagram_type}/${output_format}/${encoded_value}"
     
     print_info "Generated Kroki URL: ${kroki_url:0:80}..."
