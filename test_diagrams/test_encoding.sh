@@ -5,45 +5,43 @@
 
 echo "Testing encoding functionality of diagram-dsl-to-image.sh..."
 
-# Function to encode diagram source using deflate compression (from diagram-dsl-to-image.sh)
+# Function to encode diagram source using deflate compression (from diagram-dsl-to-image.sh, following Python reference)
 encode_diagram_source() {
     local source="$1"
     
-    # Create temporary file with the source content
-    local temp_input=$(mktemp)
-    echo -n "$source" > "$temp_input"
-    
-    # Using Python for better compatibility with Kroki's expectations
+    # Using Python following the reference: python -c "import sys; import base64; import zlib; print(base64.urlsafe_b64encode(zlib.compress(sys.stdin.read().encode('utf-8'), 9)).decode('ascii'))"
     if command -v python3 >/dev/null 2>&1; then
-        local compressed=$(python3 -c "
+        local compressed=$(echo -n "$source" | python3 -c "
 import sys
 import base64
 import zlib
-data = sys.argv[1].encode('utf-8')
-compressed = zlib.compress(data)[2:-4]  # Remove zlib headers
+data = sys.stdin.read().encode('utf-8')
+compressed = zlib.compress(data, 9)
 result = base64.urlsafe_b64encode(compressed).decode('ascii')
 print(result.replace('=', ''))
-" "$source")
+")
     elif command -v python >/dev/null 2>&1; then
-        local compressed=$(python -c "
+        local compressed=$(echo -n "$source" | python -c "
 import sys
 import base64
 import zlib
-data = sys.argv[1].encode('utf-8')
-compressed = zlib.compress(data)[2:-4]  # Remove zlib headers
+data = sys.stdin.read().encode('utf-8')
+compressed = zlib.compress(data, 9)
 result = base64.urlsafe_b64encode(compressed).decode('ascii')
 print(result.replace('=', ''))
-" "$source")
+")
     else
-        # Fallback to gzip if python is not available
-        local temp_output=$(mktemp)
-        gzip -c "$temp_input" | base64 -w 0 | tr '+/' '-_' | tr -d '=' > "$temp_output"
-        local compressed=$(cat "$temp_output")
-        rm -f "$temp_output"
+        # Fallback implementation using zlib compression via other means if python is not available
+        # Create temporary file for input
+        local temp_input=$(mktemp)
+        echo -n "$source" > "$temp_input"
+        
+        # Using gzip compression (not exactly the same but similar)
+        local compressed=$(gzip -c "$temp_input" | base64 -w 0 | tr '+/' '-_' | tr -d '=')
+        
+        # Clean up
+        rm -f "$temp_input"
     fi
-    
-    # Clean up
-    rm -f "$temp_input"
     
     echo "$compressed"
 }

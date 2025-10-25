@@ -71,44 +71,53 @@ get_filename_without_ext() {
     echo "${filename%.*}"
 }
 
-# Function to encode diagram source using deflate compression (similar to JavaScript version)
+# Function to encode diagram source using deflate compression (similar to Python reference)
 encode_diagram_source() {
     local source="$1"
     
-    # Create temporary file with the source content
-    local temp_input=$(mktemp)
-    local temp_output=$(mktemp)
-    echo -n "$source" > "$temp_input"
-    
     # Compress using zlib (deflate), then base64 encode and make URL-safe
-    # Using Python for better compatibility with Kroki's expectations
+    # Using Python following the exact reference: python -c "import sys; import base64; import zlib; print(base64.urlsafe_b64encode(zlib.compress(sys.stdin.read().encode('utf-8'), 9)).decode('ascii'))"
     if command_exists python3; then
-        local compressed=$(python3 -c "
+        local compressed=$(echo -n "$source" | python3 -c "
 import sys
 import base64
 import zlib
-data = sys.argv[1].encode('utf-8')
-compressed = zlib.compress(data)[2:-4]  # Remove zlib headers
+data = sys.stdin.read().encode('utf-8')
+compressed = zlib.compress(data, 9)
 result = base64.urlsafe_b64encode(compressed).decode('ascii')
 print(result.replace('=', ''))
-" "$source")
+")
     elif command_exists python; then
+        local compressed=$(echo -n "$source" | python -c "
+import sys
+import base64
+import zlib
+data = sys.stdin.read().encode('utf-8')
+compressed = zlib.compress(data, 9)
+result = base64.urlsafe_b64encode(compressed).decode('ascii')
+print(result.replace('=', ''))
+")
+    else
+        # Fallback implementation using zlib compression via other means if python is not available
+        # Create temporary file for input
+        local temp_input=$(mktemp)
+        echo -n "$source" > "$temp_input"
+        
+        # Using the reference command via python file
         local compressed=$(python -c "
 import sys
 import base64
 import zlib
-data = sys.argv[1].encode('utf-8')
-compressed = zlib.compress(data)[2:-4]  # Remove zlib headers
+with open('$temp_input', 'r', encoding='utf-8') as f:
+    data = f.read()
+compressed = zlib.compress(data.encode('utf-8'), 9)
 result = base64.urlsafe_b64encode(compressed).decode('ascii')
 print(result.replace('=', ''))
-" "$source")
-    else
-        # Fallback to gzip if python is not available
-        local compressed=$(gzip -c "$temp_input" | base64 -w 0 | tr '+/' '-_' | tr -d '=')
+")
+        
+        # Clean up
+        rm -f "$temp_input"
     fi
-    
-    # Clean up
-    rm -f "$temp_input" "$temp_output"
     
     echo "$compressed"
 }

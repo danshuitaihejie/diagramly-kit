@@ -23,7 +23,7 @@ function Encode-DiagramSource {
     # Convert string to byte array
     $bytes = [System.Text.Encoding]::UTF8.GetBytes($Source)
     
-    # Compress using Deflate
+    # Compress using Deflate (similar to Python reference implementation)
     $output = New-Object System.IO.MemoryStream
     $deflate = New-Object System.IO.Compression.DeflateStream($output, [System.IO.Compression.CompressionMode]::Compress)
     $deflate.Write($bytes, 0, $bytes.Length)
@@ -33,7 +33,7 @@ function Encode-DiagramSource {
     $compressedBytes = $output.ToArray()
     $output.Close()
     
-    # Convert to Base64 and make URL-safe
+    # Convert to Base64 and make URL-safe (following Python reference pattern)
     $base64 = [System.Convert]::ToBase64String($compressedBytes)
     $base64 = $base64 -replace '\+', '-'
     $base64 = $base64 -replace '/', '_'
