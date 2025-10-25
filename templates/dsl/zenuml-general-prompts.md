@@ -1,15 +1,11 @@
-/**
- * ZenUML General Prompts
- */
-import {
-	type DiagramPromptConfig,
-	PromptTemplate,
-} from "../value-objects/prompt-config";
+# ZenUML General Prompts Template
 
-/**
- * ZenUML General 新建图表 Prompt
- */
-export const ZENUML_GENERAL_NEW_PROMPT = `
+## Overview
+ZenUML is a code to diagram language with a DSL defined for creating sequence diagrams. This template provides the standard prompts for generating and modifying ZenUML diagrams.
+
+## New Diagram Prompt
+
+```
 ZenUML is a code to diagram language with a DSL defined for creating sequence diagrams. 
  
 Rule and syntax with example below: 
@@ -152,12 +148,11 @@ Right examples:
 
 Wrong example: 
 ✗ if(valid and approved)
-`;
+```
 
-/**
- * ZenUML General 修改图表 Prompt
- */
-export const ZENUML_GENERAL_MODIFY_PROMPT = `
+## Modify Diagram Prompt
+
+```
 You are helping to modify an existing ZenUML diagram. ZenUML is a code to diagram language with a DSL defined for creating sequence diagrams. 
  
 ZenUML is a code to diagram language with a DSL defined for creating sequence diagrams. 
@@ -304,24 +299,21 @@ Wrong example:
 ✗ if(valid and approved)
 
 Current diagram:
-\`\`\` 
+``` 
 {CURRENT_CODE}
-\`\`\` 
+``` 
 
 Modification request:
 {COMMAND}
 
 Please update the ZenUML DSL according to the request while maintaining the existing structure and style where appropriate.
-`;
+```
 
-/**
- * ZenUML General Prompt 配置
- */
-export const ZENUML_GENERAL_CONFIG: DiagramPromptConfig = {
-	languageKey: "LANG_ZENUML",
-	subTypeKey: "GENERAL",
-	prompts: {
-		[PromptTemplate.NEW]: ZENUML_GENERAL_NEW_PROMPT,
-		[PromptTemplate.MODIFY]: ZENUML_GENERAL_MODIFY_PROMPT,
-	},
-};
+## Configuration
+
+- **Language Key**: LANG_ZENUML
+- **SubType Key**: GENERAL
+- **Template Type**: DSL
+- **Prompts Available**:
+  - NEW: For creating new ZenUML diagrams from scratch
+  - MODIFY: For modifying existing ZenUML diagrams
