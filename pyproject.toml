@@ -1,7 +1,7 @@
 [project]
 name = "diagramly-cli"
 version = "0.0.20"
-description = "Diagramly CLI, part of GitHub Spec Kit. A tool to bootstrap your projects for Spec-Driven Development (SDD)."
+description = "Diagramly CLI, part of Diagramly Kit. A tool to transform user intentions into visual diagrams automatically."
 requires-python = ">=3.11"
 dependencies = [
     "typer",

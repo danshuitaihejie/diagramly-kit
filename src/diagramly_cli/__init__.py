@@ -353,7 +353,7 @@ class BannerGroup(TyperGroup):
 
 app = typer.Typer(
     name="diagramly",
-    help="Setup tool for Diagramly spec-driven development projects",
+    help="Setup tool for Diagramly projects that transform user intentions into visual diagrams",
     add_completion=False,
     invoke_without_command=True,
     cls=BannerGroup,

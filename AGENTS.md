@@ -1,10 +1,10 @@
 # AGENTS.md
 
-## About Spec Kit and Diagramly
+## About Diagramly Kit and Diagram Generation
 
-**GitHub Spec Kit** is a comprehensive toolkit for implementing Spec-Driven Development (SDD) - a methodology that emphasizes creating clear specifications before implementation. The toolkit includes templates, scripts, and workflows that guide development teams through a structured approach to building software.
+**Diagramly Kit** is a comprehensive toolkit for implementing User Intention to Diagram Generation (UIDG) - a methodology that emphasizes transforming user requirements directly into visual diagrams. The toolkit includes templates, scripts, and workflows that guide users through a structured approach to generating diagrams from natural language descriptions.
 
-**Diagramly CLI** is the command-line interface that bootstraps projects with the Spec Kit framework. It sets up the necessary directory structures, templates, and AI agent integrations to support the Spec-Driven Development workflow.
+**Diagramly CLI** is the command-line interface that bootstraps projects with the Diagramly Kit framework. It sets up the necessary directory structures, templates, and AI agent integrations to support the User Intention to Diagram Generation workflow.
 
 The toolkit supports multiple AI coding assistants, allowing teams to use their preferred tools while maintaining consistent project structure and development practices.
 
@@ -16,7 +16,7 @@ The toolkit supports multiple AI coding assistants, allowing teams to use their 
 
 ## Adding New Agent Support
 
-This section explains how to add support for new AI agents/assistants to the Diagramly CLI. Use this guide as a reference when integrating new AI tools into the Spec-Driven Development workflow.
+This section explains how to add support for new AI agents/assistants to the Diagramly CLI. Use this guide as a reference when integrating new AI tools into the User Intention to Diagram Generation workflow.
 
 ### Overview
 
@@ -318,7 +318,7 @@ Different agents use different argument placeholders:
 When adding new agents:
 
 - Consider the agent's native command/workflow patterns
-- Ensure compatibility with the Spec-Driven Development process
+- Ensure compatibility with the User Intention to Diagram Generation process
 - Document any special requirements or limitations
 - Update this guide with lessons learned
 - Verify the actual CLI tool name before adding to AGENT_CONFIG

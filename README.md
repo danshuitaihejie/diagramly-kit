@@ -1,11 +1,11 @@
 <div align="center">
     <img src="./media/logo_small.webp"/>
-    <h1>🌱 Spec Kit</h1>
-    <h3><em>Build high-quality software faster.</em></h3>
+    <h1>🌱 Diagramly Kit</h1>
+    <h3><em>Transform user intentions into visual diagrams automatically.</em></h3>
 </div>
 
 <p align="center">
-    <strong>An effort to allow organizations to focus on product scenarios rather than writing undifferentiated code with the help of Spec-Driven Development.</strong>
+    <strong>A toolkit to help transform user requirements and intentions directly into visual diagrams and system representations.</strong>
 </p>
 
 <p align="center">
@@ -19,14 +19,14 @@
 
 ## Table of Contents
 
-- [🤔 What is Spec-Driven Development?](#-what-is-spec-driven-development)
+- [🤔 What is User Intention to Diagram Generation?](#-what-is-user-intention-to-diagram-generation)
 - [⚡ Get started](#-get-started)
 - [📽️ Video Overview](#️-video-overview)
 - [🤖 Supported AI Agents](#-supported-ai-agents)
-- [🔧 Diagramly CLI Reference](#-specify-cli-reference)
+- [🔧 Diagramly CLI Reference](#-diagramly-cli-reference)
 - [📚 Core philosophy](#-core-philosophy)
-- [🌟 Development phases](#-development-phases)
-- [🎯 Experimental goals](#-experimental-goals)
+- [🌟 Use cases](#-use-cases)
+- [🎯 Goals](#-goals)
 - [🔧 Prerequisites](#-prerequisites)
 - [📖 Learn more](#-learn-more)
 - [📋 Detailed process](#-detailed-process)
@@ -36,9 +36,9 @@
 - [🙏 Acknowledgements](#-acknowledgements)
 - [📄 License](#-license)
 
-## 🤔 What is Spec-Driven Development?
+## 🤔 What is User Intention to Diagram Generation?
 
-Spec-Driven Development **flips the script** on traditional software development. For decades, code has been king — specifications were just scaffolding we built and discarded once the "real work" of coding began. Spec-Driven Development changes this: **specifications become executable**, directly generating working implementations rather than just guiding them.
+User Intention to Diagram Generation **flips the script** on traditional diagram creation. For decades, creating diagrams required manual work - users had to draw boxes, connect lines, and format layouts. User Intention to Diagram Generation changes this: **user requirements and intentions become visual representations**, automatically generating diagrams that match the user's intent rather than requiring manual creation.
 
 ## ⚡ Get started
 
@@ -82,53 +82,38 @@ uvx --from git+https://github.com/github/diagramly-kit.git diagramly init <PROJE
 - Better tool management with `uv tool list`, `uv tool upgrade`, `uv tool uninstall`
 - Cleaner shell configuration
 
-### 2. Establish project principles
+### 2. Initialize your project
 
-Use the **`/diagramlykit.constitution`** command to create your project's governing principles and development guidelines that will guide all subsequent development.
-
-```bash
-/diagramlykit.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements
-```
-
-### 3. Create the spec
-
-Use the **`/diagramlykit.specify`** command to describe what you want to build. Focus on the **what** and **why**, not the tech stack.
+Use the **`diagramly init`** command to set up your diagram generation environment:
 
 ```bash
-/diagramlykit.specify Build an application that can help me organize my photos in separate photo albums. Albums are grouped by date and can be re-organized by dragging and dropping on the main page. Albums are never in other nested albums. Within each album, photos are previewed in a tile-like interface.
+diagramly init my-diagram-project
 ```
 
-### 4. Create a technical implementation plan
+### 3. Generate diagrams from your intentions
 
-Use the **`/diagramlykit.plan`** command to provide your tech stack and architecture choices.
+Use the **`/diagramlykit.diagram`** command to describe what you want to visualize. Focus on the **what** you want to see.
 
 ```bash
-/diagramlykit.plan The application uses Vite with minimal number of libraries. Use vanilla HTML, CSS, and JavaScript as much as possible. Images are not uploaded anywhere and metadata is stored in a local SQLite database.
+/diagramlykit.diagram Generate a system architecture diagram showing the relationship between user, web application, database, and external services. The web application should use React with a Node.js backend.
 ```
 
-### 5. Break down into tasks
+### 4. Generate other diagrams as needed
 
-Use **`/diagramlykit.tasks`** to create an actionable task list from your implementation plan.
+Use **`/diagramlykit.diagram`** with different types of diagrams:
 
 ```bash
-/diagramlykit.tasks
+/diagramlykit.diagram Create a UML class diagram for the user and order management system with classes User, Order, and Product.
+/diagramlykit.diagram Generate a flowchart showing the user registration process from sign up to account activation.
 ```
 
-### 6. Execute implementation
-
-Use **`/diagramlykit.implement`** to execute all tasks and build your feature according to the plan.
-
-```bash
-/diagramlykit.implement
-```
-
-For detailed step-by-step instructions, see our [comprehensive guide](./spec-driven.md).
+For detailed step-by-step instructions, see our [comprehensive guide](./diagram-generation.md).
 
 ## 📽️ Video Overview
 
-Want to see Spec Kit in action? Watch our [video overview](https://www.youtube.com/watch?v=a9eR1xsfvHg&pp=0gcJCckJAYcqIYzv)!
+Want to see Diagramly Kit in action? Watch our [video overview](https://www.youtube.com/watch?v=a9eR1xsfvHg&pp=0gcJCckJAYcqIYzv)!
 
-[![Spec Kit video header](/media/diagramly-kit-video-header.jpg)](https://www.youtube.com/watch?v=a9eR1xsfvHg&pp=0gcJCckJAYcqIYzv)
+[![Diagramly Kit video header](/media/diagramly-kit-video-header.jpg)](https://www.youtube.com/watch?v=a9eR1xsfvHg&pp=0gcJCckJAYcqIYzv)
 
 ## 🤖 Supported AI Agents
 
@@ -217,30 +202,29 @@ diagramly check
 
 ### Available Slash Commands
 
-After running `diagramly init`, your AI coding agent will have access to these slash commands for structured development:
+After running `diagramly init`, your AI coding agent will have access to these slash commands for diagram generation:
 
 #### Core Commands
 
-Essential commands for the Spec-Driven Development workflow:
+Essential commands for the User Intention to Diagram Generation workflow:
 
 | Command                  | Description                                                           |
 |--------------------------|-----------------------------------------------------------------------|
-| `/diagramlykit.constitution`  | Create or update project governing principles and development guidelines |
-| `/diagramlykit.specify`       | Define what you want to build (requirements and user stories)        |
-| `/diagramlykit.plan`          | Create technical implementation plans with your chosen tech stack     |
-| `/diagramlykit.tasks`         | Generate actionable task lists for implementation                     |
-| `/diagramlykit.diagram`       | Generate diagrams from DSL code based on user requirements (Mermaid, PlantUML, Graphviz, etc.) |
-| `/diagramlykit.implement`     | Execute all tasks to build the feature according to the plan         |
+| `/diagramlykit.diagram`       | Generate diagrams from user requirements (Mermaid, PlantUML, Graphviz, etc.) |
+| `/diagramlykit.architecture`  | Generate system architecture diagrams based on your specifications    |
+| `/diagramlykit.flow`          | Create flowcharts and process diagrams from your descriptions         |
+| `/diagramlykit.uml`           | Generate UML diagrams including class, sequence, and activity diagrams |
+| `/diagramlykit.visualize`     | Create data visualization diagrams from your data models             |
 
 #### Optional Commands
 
-Additional commands for enhanced quality and validation:
+Additional commands for enhanced diagram generation:
 
 | Command              | Description                                                           |
 |----------------------|-----------------------------------------------------------------------|
-| `/diagramlykit.clarify`   | Clarify underspecified areas (recommended before `/diagramlykit.plan`; formerly `/quizme`) |
-| `/diagramlykit.analyze`   | Cross-artifact consistency & coverage analysis (run after `/diagramlykit.tasks`, before `/diagramlykit.implement`) |
-| `/diagramlykit.checklist` | Generate custom quality checklists that validate requirements completeness, clarity, and consistency (like "unit tests for English") |
+| `/diagramlykit.clarify`   | Clarify underspecified diagram requirements (recommended before complex diagrams) |
+| `/diagramlykit.analyze`   | Analyze and validate diagram accuracy and completeness |
+| `/diagramlykit.export`    | Export diagrams in various formats (PNG, SVG, PDF, etc.) |
 
 ### Environment Variables
 
@@ -250,46 +234,39 @@ Additional commands for enhanced quality and validation:
 
 ## 📚 Core philosophy
 
-Spec-Driven Development is a structured process that emphasizes:
+User Intention to Diagram Generation is a structured process that emphasizes:
 
-- **Intent-driven development** where specifications define the "_what_" before the "_how_"
-- **Rich specification creation** using guardrails and organizational principles
-- **Multi-step refinement** rather than one-shot code generation from prompts
-- **Heavy reliance** on advanced AI model capabilities for specification interpretation
+- **Intent-driven visualization** where user requirements define the "_what_" before the "_how_"
+- **Rich diagram generation** using AI to transform natural language into visual representations
+- **Multi-step refinement** rather than one-shot diagram creation from prompts
+- **Heavy reliance** on advanced AI model capabilities for diagram interpretation and generation
 
-## 🌟 Development phases
+## 🌟 Use cases
 
-| Phase | Focus | Key Activities |
+| Use Case | Focus | Key Activities |
 |-------|-------|----------------|
-| **0-to-1 Development** ("Greenfield") | Generate from scratch | <ul><li>Start with high-level requirements</li><li>Generate specifications</li><li>Plan implementation steps</li><li>Build production-ready applications</li></ul> |
-| **Creative Exploration** | Parallel implementations | <ul><li>Explore diverse solutions</li><li>Support multiple technology stacks & architectures</li><li>Experiment with UX patterns</li></ul> |
-| **Iterative Enhancement** ("Brownfield") | Brownfield modernization | <ul><li>Add features iteratively</li><li>Modernize legacy systems</li><li>Adapt processes</li></ul> |
+| **System Architecture** | Visualize system components | <ul><li>Document system architecture</li><li>Generate component diagrams</li><li>Create deployment diagrams</li><li>Visualize service interactions</li></ul> |
+| **Process Documentation** | Flow and procedure visualization | <ul><li>Create workflow diagrams</li><li>Document business processes</li><li>Generate sequence diagrams</li></ul> |
+| **Data Modeling** | Data structure visualization | <ul><li>Create entity-relationship diagrams</li><li>Generate class diagrams from requirements</li><li>Visualize data flows</li></ul> |
 
-## 🎯 Experimental goals
+## 🎯 Goals
 
-Our research and experimentation focus on:
+Our goals focus on:
 
-### Technology independence
+### Visualization simplicity
 
-- Create applications using diverse technology stacks
-- Validate the hypothesis that Spec-Driven Development is a process not tied to specific technologies, programming languages, or frameworks
+- Transform user requirements into visual diagrams automatically
+- Support diverse diagram types (system architecture, flowcharts, UML, data models)
 
-### Enterprise constraints
+### User experience
 
-- Demonstrate mission-critical application development
-- Incorporate organizational constraints (cloud providers, tech stacks, engineering practices)
-- Support enterprise design systems and compliance requirements
+- Make diagram creation accessible to non-technical users
+- Generate high-quality diagrams from natural language descriptions
 
-### User-centric development
+### AI capabilities
 
-- Build applications for different user cohorts and preferences
-- Support various development approaches (from vibe-coding to AI-native development)
-
-### Creative & iterative processes
-
-- Validate the concept of parallel implementation exploration
-- Provide robust iterative feature development workflows
-- Extend processes to handle upgrades and modernization tasks
+- Leverage advanced AI for diagram interpretation and generation
+- Support iterative refinement of generated diagrams
 
 ## 🔧 Prerequisites
 
@@ -303,7 +280,7 @@ If you encounter issues with an agent, please open an issue so we can refine the
 
 ## 📖 Learn more
 
-- **[Complete Spec-Driven Development Methodology](./spec-driven.md)** - Deep dive into the full process
+- **[Complete User Intention to Diagram Generation Methodology](./diagram-generation.md)** - Deep dive into the full process
 - **[Detailed Walkthrough](#-detailed-process)** - Step-by-step implementation guide
 
 ---
@@ -361,55 +338,30 @@ The CLI will check if you have Claude Code, Gemini CLI, Cursor CLI, Qwen CLI, op
 diagramly init <project_name> --ai claude --ignore-agent-tools
 ```
 
-### **STEP 1:** Establish project principles
+### **STEP 1:** Initialize your diagram environment
 
 Go to the project folder and run your AI agent. In our example, we're using `claude`.
 
 ![Bootstrapping Claude Code environment](./media/bootstrap-claude-code.gif)
 
-You will know that things are configured correctly if you see the `/diagramlykit.constitution`, `/diagramlykit.specify`, `/diagramlykit.plan`, `/diagramlykit.tasks`, and `/diagramlykit.implement` commands available.
+You will know that things are configured correctly if you see the `/diagramlykit.diagram`, `/diagramlykit.architecture`, `/diagramlykit.flow`, `/diagramlykit.uml`, and `/diagramlykit.visualize` commands available.
 
-The first step should be establishing your project's governing principles using the `/diagramlykit.constitution` command. This helps ensure consistent decision-making throughout all subsequent development phases:
+The environment will be set up with the necessary templates and configurations for diagram generation.
 
-```text
-/diagramlykit.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements. Include governance for how these principles should guide technical decisions and implementation choices.
-```
+### **STEP 2:** Generate your first diagram
 
-This step creates or updates the `.diagramly/memory/constitution.md` file with your project's foundational guidelines that the AI agent will reference during specification, planning, and implementation phases.
-
-### **STEP 2:** Create project specifications
-
-With your project principles established, you can now create the functional specifications. Use the `/diagramlykit.specify` command and then provide the concrete requirements for the project you want to develop.
+With your environment established, you can now generate diagrams. Use the `/diagramlykit.diagram` command and then provide the description of what you want to visualize.
 
 >[!IMPORTANT]
->Be as explicit as possible about _what_ you are trying to build and _why_. **Do not focus on the tech stack at this point**.
+>Be as explicit as possible about _what_ you want to see in the diagram and _why_. **Do not focus on the diagram format at this point**.
 
 An example prompt:
 
 ```text
-Develop Taskify, a team productivity platform. It should allow users to create projects, add team members,
-assign tasks, comment and move tasks between boards in Kanban style. In this initial phase for this feature,
-let's call it "Create Taskify," let's have multiple users but the users will be declared ahead of time, predefined.
-I want five users in two different categories, one product manager and four engineers. Let's create three
-different sample projects. Let's have the standard Kanban columns for the status of each task, such as "To Do,"
-"In Progress," "In Review," and "Done." There will be no login for this application as this is just the very
-first testing thing to ensure that our basic features are set up. For each task in the UI for a task card,
-you should be able to change the current status of the task between the different columns in the Kanban work board.
-You should be able to leave an unlimited number of comments for a particular card. You should be able to, from that task
-card, assign one of the valid users. When you first launch Taskify, it's going to give you a list of the five users to pick
-from. There will be no password required. When you click on a user, you go into the main view, which displays the list of
-projects. When you click on a project, you open the Kanban board for that project. You're going to see the columns.
-You'll be able to drag and drop cards back and forth between different columns. You will see any cards that are
-assigned to you, the currently logged in user, in a different color from all the other ones, so you can quickly
-see yours. You can edit any comments that you make, but you can't edit comments that other people made. You can
-delete any comments that you made, but you can't delete comments anybody else made.
+Generate a system architecture diagram showing the relationship between users, web application, database, and external services. The web application should use React with a Node.js backend, and the database should be PostgreSQL. The external services include a payment gateway and email service.
 ```
 
-After this prompt is entered, you should see Claude Code kick off the planning and spec drafting process. Claude Code will also trigger some of the built-in scripts to set up the repository.
-
-Once this step is completed, you should have a new branch created (e.g., `001-create-taskify`), as well as a new specification in the `specs/001-create-taskify` directory.
-
-The produced specification should contain a set of user stories and functional requirements, as defined in the template.
+After this prompt is entered, you should see your AI agent generate the appropriate diagram code, visualize it, and provide you with the diagram in multiple formats.
 
 At this stage, your project folder contents should resemble the following:
 
@@ -420,151 +372,65 @@ At this stage, your project folder contents should resemble the following:
     ├── scripts
     │	 ├── check-prerequisites.sh
     │	 ├── common.sh
-    │	 ├── create-new-feature.sh
-    │	 ├── setup-plan.sh
-    │	 └── update-claude-md.sh
-    ├── specs
-    │	 └── 001-create-taskify
-    │	     └── spec.md
+    │	 ├── diagram-generation.sh
+    │	 ├── architecture-diagram.sh
+    │	 └── visualize.sh
+    ├── diagrams
+    │	 └── 001-architecture
+    │	     ├── diagram.md
+    │	     ├── diagram.mmd (Mermaid)
+    │	     ├── diagram.puml (PlantUML)
+    │	     └── diagram.png
     └── templates
-        ├── plan-template.md
-        ├── spec-template.md
-        └── tasks-template.md
+        ├── diagram-template.md
+        ├── architecture-template.md
+        └── flow-template.md
 ```
 
-### **STEP 3:** Functional specification clarification (required before planning)
+### **STEP 3:** Refine your diagram (optional)
 
-With the baseline specification created, you can go ahead and clarify any of the requirements that were not captured properly within the first shot attempt.
+You can refine your diagram by providing additional details or requesting changes to the existing diagram.
 
-You should run the structured clarification workflow **before** creating a technical plan to reduce rework downstream.
-
-Preferred order:
-1. Use `/diagramlykit.clarify` (structured) – sequential, coverage-based questioning that records answers in a Clarifications section.
-2. Optionally follow up with ad-hoc free-form refinement if something still feels vague.
-
-If you intentionally want to skip clarification (e.g., spike or exploratory prototype), explicitly state that so the agent doesn't block on missing clarifications.
-
-Example free-form refinement prompt (after `/diagramlykit.clarify` if still needed):
+Example refinement prompt:
 
 ```text
-For each sample project or project that you create there should be a variable number of tasks between 5 and 15
-tasks for each one randomly distributed into different states of completion. Make sure that there's at least
-one task in each stage of completion.
+Make the database layer more detailed by showing the user, order, and product tables with their key fields.
 ```
 
-You should also ask Claude Code to validate the **Review & Acceptance Checklist**, checking off the things that are validated/pass the requirements, and leave the ones that are not unchecked. The following prompt can be used:
+Or to explore alternative visualizations:
 
 ```text
-Read the review and acceptance checklist, and check off each item in the checklist if the feature spec meets the criteria. Leave it empty if it does not.
+Show the same system architecture but in a component diagram format instead of deployment diagram.
 ```
 
-It's important to use the interaction with Claude Code as an opportunity to clarify and ask questions around the specification - **do not treat its first attempt as final**.
+### **STEP 4:** Generate specialized diagrams
 
-### **STEP 4:** Generate a plan
+Use specialized commands for different types of diagrams:
 
-You can now be specific about the tech stack and other technical requirements. You can use the `/diagramlykit.plan` command that is built into the project template with a prompt like this:
+- `/diagramlykit.architecture` - for system architecture diagrams
+- `/diagramlykit.flow` - for flowcharts and process diagrams
+- `/diagramlykit.uml` - for UML class, sequence, and activity diagrams
+- `/diagramlykit.visualize` - for data visualization diagrams
+
+Examples:
 
 ```text
-We are going to generate this using .NET Aspire, using Postgres as the database. The frontend should use
-Blazor server with drag-and-drop task boards, real-time updates. There should be a REST API created with a projects API,
-tasks API, and a notifications API.
+/diagramlykit.flow Create a flowchart showing the user registration process from sign up to account activation with decision points for email verification.
 ```
-
-The output of this step will include a number of implementation detail documents, with your directory tree resembling this:
 
 ```text
-.
-├── CLAUDE.md
-├── memory
-│	 └── constitution.md
-├── scripts
-│	 ├── check-prerequisites.sh
-│	 ├── common.sh
-│	 ├── create-new-feature.sh
-│	 ├── setup-plan.sh
-│	 └── update-claude-md.sh
-├── specs
-│	 └── 001-create-taskify
-│	     ├── contracts
-│	     │	 ├── api-spec.json
-│	     │	 └── signalr-spec.md
-│	     ├── data-model.md
-│	     ├── plan.md
-│	     ├── quickstart.md
-│	     ├── research.md
-│	     └── spec.md
-└── templates
-    ├── CLAUDE-template.md
-    ├── plan-template.md
-    ├── spec-template.md
-    └── tasks-template.md
+/diagramlykit.uml Generate a class diagram for the e-commerce system with classes User, Product, Order, and Payment, showing their relationships.
 ```
 
-Check the `research.md` document to ensure that the right tech stack is used, based on your instructions. You can ask Claude Code to refine it if any of the components stand out, or even have it check the locally-installed version of the platform/framework you want to use (e.g., .NET).
+### **STEP 5:** Export your diagrams
 
-Additionally, you might want to ask Claude Code to research details about the chosen tech stack if it's something that is rapidly changing (e.g., .NET Aspire, JS frameworks), with a prompt like this:
+Use `/diagramlykit.export` to save your diagrams in different formats:
 
 ```text
-I want you to go through the implementation plan and implementation details, looking for areas that could
-benefit from additional research as .NET Aspire is a rapidly changing library. For those areas that you identify that
-require further research, I want you to update the research document with additional details about the specific
-versions that we are going to be using in this Taskify application and spawn parallel research tasks to clarify
-any details using research from the web.
+/diagramlykit.export Export the current diagram as PNG, SVG, and PDF files.
 ```
 
-During this process, you might find that Claude Code gets stuck researching the wrong thing - you can help nudge it in the right direction with a prompt like this:
-
-```text
-I think we need to break this down into a series of steps. First, identify a list of tasks
-that you would need to do during implementation that you're not sure of or would benefit
-from further research. Write down a list of those tasks. And then for each one of these tasks,
-I want you to spin up a separate research task so that the net results is we are researching
-all of those very specific tasks in parallel. What I saw you doing was it looks like you were
-researching .NET Aspire in general and I don't think that's gonna do much for us in this case.
-That's way too untargeted research. The research needs to help you solve a specific targeted question.
-```
-
->[!NOTE]
->Claude Code might be over-eager and add components that you did not ask for. Ask it to clarify the rationale and the source of the change.
-
-### **STEP 5:** Have Claude Code validate the plan
-
-With the plan in place, you should have Claude Code run through it to make sure that there are no missing pieces. You can use a prompt like this:
-
-```text
-Now I want you to go and audit the implementation plan and the implementation detail files.
-Read through it with an eye on determining whether or not there is a sequence of tasks that you need
-to be doing that are obvious from reading this. Because I don't know if there's enough here. For example,
-when I look at the core implementation, it would be useful to reference the appropriate places in the implementation
-details where it can find the information as it walks through each step in the core implementation or in the refinement.
-```
-
-This helps refine the implementation plan and helps you avoid potential blind spots that Claude Code missed in its planning cycle. Once the initial refinement pass is complete, ask Claude Code to go through the checklist once more before you can get to the implementation.
-
-You can also ask Claude Code (if you have the [GitHub CLI](https://docs.github.com/en/github-cli/github-cli) installed) to go ahead and create a pull request from your current branch to `main` with a detailed description, to make sure that the effort is properly tracked.
-
->[!NOTE]
->Before you have the agent implement it, it's also worth prompting Claude Code to cross-check the details to see if there are any over-engineered pieces (remember - it can be over-eager). If over-engineered components or decisions exist, you can ask Claude Code to resolve them. Ensure that Claude Code follows the [constitution](base/memory/constitution.md) as the foundational piece that it must adhere to when establishing the plan.
-
-### STEP 6: Implementation
-
-Once ready, use the `/diagramlykit.implement` command to execute your implementation plan:
-
-```text
-/diagramlykit.implement
-```
-
-The `/diagramlykit.implement` command will:
-- Validate that all prerequisites are in place (constitution, spec, plan, and tasks)
-- Parse the task breakdown from `tasks.md`
-- Execute tasks in the correct order, respecting dependencies and parallel execution markers
-- Follow the TDD approach defined in your task plan
-- Provide progress updates and handle errors appropriately
-
->[!IMPORTANT]
->The AI agent will execute local CLI commands (such as `dotnet`, `npm`, etc.) - make sure you have the required tools installed on your machine.
-
-Once the implementation is complete, test the application and resolve any runtime errors that may not be visible in CLI logs (e.g., browser console errors). You can copy and paste such errors back to your AI agent for resolution.
+This makes it easy to share your diagrams with stakeholders or include them in documentation.
 
 </details>
 
@@ -596,7 +462,7 @@ rm gcm-linux_amd64.2.6.1.deb
 
 ## 💬 Support
 
-For support, please open a [GitHub issue](https://github.com/github/diagramly-kit/issues/new). We welcome bug reports, feature requests, and questions about using Spec-Driven Development.
+For support, please open a [GitHub issue](https://github.com/github/diagramly-kit/issues/new). We welcome bug reports, feature requests, and questions about using User Intention to Diagram Generation.
 
 ## 🙏 Acknowledgements
 

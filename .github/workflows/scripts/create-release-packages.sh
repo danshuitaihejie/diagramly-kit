@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # create-release-packages.sh (workflow-local)
-# Build Spec Kit template release archives for each supported AI assistant and script type.
+# Build Diagramly Kit template release archives for each supported AI assistant and script type.
 # Usage: .github/workflows/scripts/create-release-packages.sh <version>
 #   Version argument should include leading 'v'.
 #   Optionally set AGENTS and/or SCRIPTS env vars to limit what gets built.
@@ -103,7 +103,7 @@ generate_commands() {
 
 build_variant() {
   local agent=$1 script=$2
-  local base_dir="$GENRELEASES_DIR/sdd-${agent}-package-${script}"
+  local base_dir="$GENRELEASES_DIR/diagramly-${agent}-package-${script}"
   echo "Building $agent ($script) package..."
   mkdir -p "$base_dir"
   
