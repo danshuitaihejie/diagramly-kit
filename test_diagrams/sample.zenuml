@@ -1,4 +1,0 @@
-User -> WebApp: request data
-WebApp -> Database: query
-Database -> WebApp: response
-WebApp -> User: return data
