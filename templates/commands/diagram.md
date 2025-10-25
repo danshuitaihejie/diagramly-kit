@@ -1,5 +1,5 @@
 ---
-description: Analyze user intent and generate both DSL and PNG diagram files for understanding files or projects. Creates both files in a single timestamped directory. Supports Mermaid, PlantUML, Graphviz, ZenUML, DrawIO, Markmap, and others. Uses local tools when available, with Kroki.io service as fallback.
+description: Analyze user intent and generate DSL, PNG, and Markdown diagram files for understanding files or projects. Creates all files in a single timestamped user directory. Supports Mermaid, PlantUML, Graphviz, ZenUML, DrawIO, Markmap, and others. Uses local tools when available, with Kroki.io service as fallback.
 scripts:
   sh: scripts/bash/diagram-dsl-to-image.sh
   ps: scripts/powershell/diagram-dsl-to-image.ps1
@@ -47,30 +47,37 @@ Follow this execution flow:
 
 4. **Analyze User Intent and Create Single Directory**: 
    - First analyze the user's intent to determine the diagram type and simple description
-   - Create a single timestamped directory: `.diagramly/{{yyyy-MM-dd-HHMMSSff}}/`
+   - Create a single timestamped directory: `.diagramly/user/{{yyyy-MM-dd-HHMMSSff}}/`
    - No other directories should be created
 
 5. **Generate DSL File**: Save the generated DSL code to the timestamped directory with the naming pattern:
-   - Place the file in the single directory: `.diagramly/{{yyyy-MM-dd-HHMMSSff}}/`
+   - Place the file in the single directory: `.diagramly/user/{{yyyy-MM-dd-HHMMSSff}}/`
    - Name the DSL file using the pattern: `{{diagram_type}}-{{simple_description}}.dsl`
    - Use the actual detected diagram type (mermaid, plantuml, graphviz, etc.) and simple description from user intent
-   - Example: `.diagramly/2025-01-15-14302256/flowchart-user-journey.dsl`
+   - Example: `.diagramly/user/2025-01-15-14302256/flowchart-user-journey.dsl`
 
-6. **Convert to Image**: Execute the appropriate script to convert the DSL file to an image in the same directory:
+6. **Convert to Image**: Execute the appropriate script to convert the DSL file to an image in the same directory (PNG creation MUST ONLY use the designated scripts):
+   - Only use the scripts defined in the header: `scripts/bash/diagram-dsl-to-image.sh` (for sh) or `scripts/powershell/diagram-dsl-to-image.ps1` (for ps)
    - Run `{SCRIPT}` with arguments: `[DSL_FILE_PATH] [OUTPUT_FORMAT] [OUTPUT_DIR]`
    - OUTPUT_FORMAT: "png" 
    - OUTPUT_DIR: Same directory as the DSL file (the timestamped directory)
    - Name the image file using the pattern: `{{diagram_type}}-{{simple_description}}.png`
-   - Example: `{SCRIPT} .diagramly/2025-01-15-14302256/flowchart-user-journey.dsl png .diagramly/2025-01-15-14302256/`
+   - Example: `{SCRIPT} .diagramly/user/2025-01-15-14302256/flowchart-user-journey.dsl png .diagramly/user/2025-01-15-14302256/`
    - Wait for successful completion before proceeding
 
-7. **Validate Output**: Ensure both files were generated successfully in the timestamped directory.
-   - Verify both the `.dsl` and `.png` files exist in the same directory
+7. **Generate Documentation File**: Create a markdown file in the same directory that documents the diagram:
+   - Place the file in the same directory: `.diagramly/user/{{yyyy-MM-dd-HHMMSSff}}/`
+   - Name the documentation file using the pattern: `{{diagram_type}}-{{simple_description}}.md`
+   - Include the DSL code in a code block for reference
+   - Example: `.diagramly/user/2025-01-15-14302256/flowchart-user-journey.md`
+
+8. **Validate Output**: Ensure all three files were generated successfully in the timestamped directory.
+   - Verify the `.dsl`, `.png`, and `.md` files exist in the same directory
    - Check that the image file has appropriate size (not zero bytes)
 
-8. **Present Result**: Show the generated image to the user and provide:
+9. **Present Result**: Show the generated image to the user and provide:
    - The DSL code that was generated (for reference)
-   - Information about the image format and location (`.diagramly/{{yyyy-MM-dd-HHMMSSff}}/`)
+   - Information about the image format and location (`.diagramly/user/{{yyyy-MM-dd-HHMMSSff}}/`)
    - Options for modifications if needed
 
 ## Diagram Generation Process
@@ -116,11 +123,11 @@ Follow this execution flow:
 
 ### For Bash (sh) users:
 - Command: `{SCRIPT} [input_file] [output_format] [output_dir]`
-- Example: `{SCRIPT} .diagramly/2025-01-15-14302256/flowchart-user-journey.dsl png .diagramly/2025-01-15-14302256/`
+- Example: `{SCRIPT} .diagramly/user/2025-01-15-14302256/flowchart-user-journey.dsl png .diagramly/user/2025-01-15-14302256/`
 
 ### For PowerShell (ps) users:
 - Command: `{SCRIPT} -InputFile "[input_file]" [-OutputFormat "[output_format]"] [-OutputDir "[output_dir]"]`
-- Example: `{SCRIPT} -InputFile ".diagramly/2025-01-15-14302256/flowchart-user-journey.dsl" -OutputFormat "png" -OutputDir ".diagramly/2025-01-15-14302256/"`
+- Example: `{SCRIPT} -InputFile ".diagramly/user/2025-01-15-14302256/flowchart-user-journey.dsl" -OutputFormat "png" -OutputDir ".diagramly/user/2025-01-15-14302256/"`
 
 ## Error Handling and Validation
 
@@ -130,36 +137,18 @@ Follow this execution flow:
   - Verify the syntax matches the expected format for the chosen DSL type
   - If errors found, regenerate with corrections before proceeding
 
-- **File Creation Validation**: Ensure the DSL file was properly created:
-  - Verify the file exists at the specified path
-  - Check that the file has content
-  - Confirm the file extension matches the diagram type
-
-- **Script Execution Error Handling**:
-  - If DSL generation fails, identify the specific error and return to step 3 with specific correction needed
-  - If image conversion tool is missing, the bash script will automatically fall back to Kroki.io service
-  - If image conversion tool is missing, provide installation instructions for the specific tool as additional option:
-    - Mermaid: `npm install -g @mermaid-js/mermaid-cli`
-    - PlantUML: `brew install plantuml` (macOS) or download from http://plantuml.com/download
-    - Graphviz: `brew install graphviz` (macOS) or install graphviz package (Linux/Windows)
-  - If the script execution fails, report the error message and suggest troubleshooting:
-    - Check DSL syntax: Re-validate the generated DSL against template syntax requirements
-    - Check file permissions: Ensure the DSL file is readable
-    - Check tool installation: Verify the conversion tool is properly installed and accessible
-    - Retry the conversion with potential fixes based on error message
-  - Both bash and PowerShell scripts now use Kroki.io service as fallback when local tools aren't available
+- **File Creation Validation**: Ensure all three files were properly created:
+  - Verify the DSL file exists at the specified path with correct content
+  - Verify the PNG file exists at the specified path with valid image data
+  - Verify the MD file exists at the specified path with proper documentation
+  - Check that all files have content and correct extensions
 
 - **Output Validation**:
-  - After script execution, verify both files were created in the expected timestamped directory (.diagramly/{{yyyy-MM-dd-HHMMSSff}}/)
-  - Check that both files follow the naming convention: `{{diagram_type}}-{{simple_description}}.dsl` and `{{diagram_type}}-{{simple_description}}.png`
+  - After script execution, verify all three files were created in the expected timestamped directory (.diagramly/user/{{yyyy-MM-dd-HHMMSSff}}/)
+  - Check that all files follow the naming convention: `{{diagram_type}}-{{simple_description}}.dsl`, `{{diagram_type}}-{{simple_description}}.png`, and `{{diagram_type}}-{{simple_description}}.md`
   - Check that the image file is not zero bytes and contains valid image data
   - If image generation fails, report the issue and suggest alternatives (different output format, different diagram structure)
   - If the timestamped directory doesn't exist, create it before running the conversion script
-
-- **Fallback Options**:
-  - If local tools fail, consider using online services (like Kroki.io) as a fallback
-  - Provide the raw DSL code to the user so they can try converting manually if needed
-  - Offer to try a different diagram type that might work better with available tools
 
 - **User Communication**:
   - Always validate the output before presenting to user
