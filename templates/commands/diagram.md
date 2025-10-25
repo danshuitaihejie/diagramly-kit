@@ -1,5 +1,5 @@
 ---
-description: Analyze user intent and generate both DSL and PNG diagram files in a single timestamped directory. Supports Mermaid, PlantUML, Graphviz, ZenUML, DrawIO, Markmap, and others. Uses local tools when available, with Kroki.io service as fallback.
+description: Analyze user intent and generate both DSL and PNG diagram files for understanding files or projects. Creates both files in a single timestamped directory. Supports Mermaid, PlantUML, Graphviz, ZenUML, DrawIO, Markmap, and others. Uses local tools when available, with Kroki.io service as fallback.
 scripts:
   sh: scripts/bash/diagram-dsl-to-image.sh
   ps: scripts/powershell/diagram-dsl-to-image.ps1
@@ -15,7 +15,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
-The user has provided requirements for a diagram. Your task is to analyze their intent and create both the DSL and image files. You will:
+The user has provided requirements for a diagram. Users may want to generate diagrams to help understand files or even the entire project. Your task is to analyze their intent and create both the DSL and image files. You will:
 1. Analyze user intent to determine diagram type and simple description
 2. Create a single timestamped directory
 3. Generate appropriate DSL code using the templates in `/templates/dsl/`
@@ -25,6 +25,8 @@ The user has provided requirements for a diagram. Your task is to analyze their 
 Follow this execution flow:
 
 1. **Analyze User Intent**: Parse the user input to understand what kind of diagram they want to create and generate a simple description.
+   - For file understanding: Generate diagrams that visualize the structure, flow, or relationships in specific files
+   - For project understanding: Generate high-level diagrams showing architecture, dependencies, workflows, or system interactions
    - Identify the purpose: flowchart, sequence diagram, UML diagram, mind map, etc.
    - Determine a simple, concise description of the diagram intent
    - Consider the audience and context
