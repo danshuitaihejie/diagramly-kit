@@ -1,221 +1,201 @@
-import { ToolDefinition } from "./index.js";
-import * as pako from "pako";
-import { z } from "zod";
-import * as fs from "fs";
-import * as path from "path";
+#!/bin/bash
 
-// 支持的图表类型
-const supportedDiagramTypes = [
-  "mermaid",
-  "zenuml",
-  "plantuml",
-  "drawio",
-  "markmap",
-  "graphviz",
-] as const;
+# Script to convert DSL files to images
+# Usage: ./diagram-dsl-to-image.sh [input_file] [output_format] [output_dir]
+# Example: ./diagram-dsl-to-image.sh input.mmd png ./output
 
-type DiagramType = (typeof supportedDiagramTypes)[number];
+set -e  # Exit on any error
 
-export const diagramDslToImageTool: ToolDefinition = {
-  name: "diagram-dsl-to-image",
-  description:
-    "Convert diagram dsl to image, support mermaid, zenuml, plantuml, drawio, markmap, graphviz. Default png if not specified.",
-  inputSchema: {
-    diagramDsl: z.string(),
-    diagramType: z.enum(supportedDiagramTypes).optional().describe("Sequence diagrams use zenuml by default"),
-    saveRootPath: z
-      .string()
-      .describe(
-        "current project root directory where .diagramly-ai folder is located"
-      ),
-    imageType: z.enum(["png"]).optional(),
-  },
-  handler: convertDiagramDslToImage,
-};
+# Default values
+DEFAULT_OUTPUT_FORMAT="png"
+DEFAULT_OUTPUT_DIR="./output"
 
-async function convertDiagramDslToImage({
-  diagramDsl,
-  diagramType,
-  saveRootPath,
-  imageType,
-}: {
-  diagramDsl: string;
-  diagramType: DiagramType;
-  saveRootPath?: string;
-  imageType?: "png";
-}) {
-  const startTime = Date.now();
-  try {
-    console.log(
-      `[CODE-TO-IMAGE] Starting conversion for ${diagramType} diagram: ${diagramDsl.substring(
-        0,
-        100
-      )}${diagramDsl.length > 100 ? "..." : ""}`
-    );
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
 
-    // 验证图表类型
-    if (!supportedDiagramTypes.includes(diagramType)) {
-      throw new Error(
-        `Unsupported diagram type: ${diagramType}. Supported types are: ${supportedDiagramTypes.join(
-          ", "
-        )}`
-      );
-    }
-
-    console.log(
-      `[CODE-TO-IMAGE] Diagram type validation passed: ${diagramType}`
-    );
-
-    // 使用改进的编码函数
-    const encodedValue = encodeDiagramSource(diagramDsl);
-    console.log(
-      `[CODE-TO-IMAGE] Encoded diagram source length: ${encodedValue.length}`
-    );
-
-    // if imageType cannot be found, use png by default
-    imageType = imageType || "png";
-
-    console.log(`[CODE-TO-IMAGE] Image type set to: ${imageType}`);
-
-    // 创建完整的 Kroki URL
-    let baseUrl = "https://kroki.io";
-    //baseUrl = "http://localhost:8000";
-    const krokiUrl = `${baseUrl}/${diagramType}/${imageType}/${encodedValue}`;
-    console.log(
-      `[CODE-TO-IMAGE] Generated Kroki URL: ${krokiUrl.substring(0, 80)}...`
-    );
-    console.log(`[CODE-TO-IMAGE] Making request to Kroki service...`);
-
-    // 使用 fetch 从 Kroki 获取图像数据，添加重试机制
-    const fetchStartTime = Date.now();
-    let response: Response | null = null;
-    let retries = 3;
-    let lastError: any;
-
-    while (retries > 0) {
-      try {
-        response = await fetch(krokiUrl);
-        if (response.ok) {
-          break;
-        }
-        console.warn(
-          `[CODE-TO-IMAGE] Kroki request failed with status: ${
-            response.status
-          }, retries left: ${retries - 1}`
-        );
-        retries--;
-        if (retries > 0) {
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // 等待 1 秒后重试
-        }
-      } catch (fetchError) {
-        console.error(`[CODE-TO-IMAGE] Kroki request error: ${fetchError}`);
-        lastError = fetchError;
-        retries--;
-        if (retries > 0) {
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // 等待 1 秒后重试
-        } else {
-          throw new Error(
-            `Failed to fetch image from Kroki after retries: ${fetchError}`
-          );
-        }
-      }
-    }
-
-    // 检查 response 是否已成功获取
-    if (!response) {
-      throw new Error(
-        `Failed to fetch image from Kroki after all retries. Last error: ${lastError}`
-      );
-    }
-
-    if (!response.ok) {
-      const errorBody = await response
-        .text()
-        .catch(() => "Unable to read error body");
-      console.error(
-        `[CODE-TO-IMAGE] Kroki error: ${response.status} ${response.statusText}, body: ${errorBody}`
-      );
-      throw new Error(
-        `Failed to fetch image from Kroki: ${response.status} ${response.statusText}`
-      );
-    }
-
-    const fetchTime = Date.now() - fetchStartTime;
-    console.log(
-      `[CODE-TO-IMAGE] Kroki request completed in ${fetchTime}ms with status: ${response.status}`
-    );
-
-    console.log(`[CODE-TO-IMAGE] Processing image response...`);
-    const imageArrayBuffer = await response.arrayBuffer();
-    const imageBytes = new Uint8Array(imageArrayBuffer);
-    console.log(
-      `[CODE-TO-IMAGE] Image data processed, byte length: ${imageBytes.length}`
-    );
-    // 生成文件名
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-    const fileName = `${diagramType}-diagram-${timestamp}.${imageType}`;
-    const rootPath = saveRootPath || process.cwd();
-    const dotDiagramlyAiDir = path.join(rootPath, ".diagramly-ai");
-    if (!fs.existsSync(dotDiagramlyAiDir)) {
-      fs.mkdirSync(dotDiagramlyAiDir, { recursive: true });
-    }
-    const filePath = path.join(dotDiagramlyAiDir, fileName);
-    fs.writeFileSync(filePath, imageBytes);
-
-    const totalTime = Date.now() - startTime;
-    console.log(
-      `[CODE-TO-IMAGE] Conversion completed successfully in ${totalTime}ms, image size: ${imageBytes.length} bytes`
-    );
-
-    // 将图像字节转换为 Base64
-    const imageBase64 = uint8ArrayToBase64(imageBytes);
-
-    // 确定 MIME 类型
-    const mimeType = "image/png";
-    const relativeFilePath = path.relative(rootPath, filePath);
-    return {
-      content: [
-        {
-          type: "text",
-          text: `success save image file to ${filePath},you can copy this image markdown code to text if you need. \n\n markdown code: \`\`\`markdown\n![image](${relativeFilePath})\n\`\`\` `,
-        },
-        {
-          type: "image",
-          data: imageBase64,
-          mimeType: mimeType,
-        },
-      ],
-    };
-  } catch (error) {
-    const totalTime = Date.now() - startTime;
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(
-      `[CODE-TO-IMAGE] Conversion failed after ${totalTime}ms: ${errorMessage}`
-    );
-    throw new Error(`Failed to convert image: ${errorMessage}`);
-  }
+# Function to print colored output
+print_info() {
+    echo -e "${GREEN}[INFO]${NC} $1"
 }
 
-// 辅助函数：将 Uint8Array 转换为 Base64 字符串
-function uint8ArrayToBase64(bytes: Uint8Array): string {
-  let binary = "";
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
+print_warn() {
+    echo -e "${YELLOW}[WARN]${NC} $1"
 }
 
-// 辅助函数：将字符串编码为 URL 安全的 Base64
-function encodeDiagramSource(source: string): string {
-  // 将字符串转换为 Uint8Array
-  const data = new TextEncoder().encode(source);
-
-  // 使用 pako 进行 deflate 压缩
-  const compressed = pako.deflate(data, { level: 9 });
-
-  // 转换为 Base64 并使 URL 安全
-  let base64 = btoa(String.fromCharCode(...compressed));
-  base64 = base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
-
-  return base64;
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
 }
+
+# Function to display help
+show_help() {
+    echo "Usage: $0 [input_file] [output_format] [output_dir]"
+    echo ""
+    echo "Convert DSL files to images using appropriate tools"
+    echo ""
+    echo "Arguments:"
+    echo "  input_file      Path to the DSL file to convert"
+    echo "  output_format   Output format (png, svg, pdf) - default: png"
+    echo "  output_dir      Output directory - default: ./output"
+    echo ""
+    echo "Supported DSL types:"
+    echo "  - Mermaid (.mmd, .mermaid)"
+    echo "  - PlantUML (.puml, .plantuml)"
+    echo "  - Graphviz (.dot, .gv)"
+    echo "  - ZenUML (.zenuml)"
+    echo "  - DrawIO (.drawio, .xml)"
+    echo ""
+    echo "Examples:"
+    echo "  $0 flowchart.mmd png ./images"
+    echo "  $0 class.puml svg"
+    echo "  $0 diagram.dot"
+}
+
+# Function to check if a command exists
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# Function to get file extension
+get_file_extension() {
+    local filename=$(basename "$1")
+    echo "${filename##*.}"
+}
+
+# Function to get filename without extension
+get_filename_without_ext() {
+    local filename=$(basename "$1")
+    echo "${filename%.*}"
+}
+
+# Main conversion function
+convert_dsl_to_image() {
+    local input_file="$1"
+    local output_format="$2"
+    local output_dir="$3"
+    local filename=$(get_filename_without_ext "$input_file")
+    
+    # Create output directory if it doesn't exist
+    mkdir -p "$output_dir"
+    
+    local output_path="${output_dir}/${filename}.${output_format}"
+    
+    print_info "Converting $input_file to $output_path"
+    
+    # Determine file type and use appropriate tool
+    case "$(get_file_extension "$input_file")" in
+        mmd|mermaid)
+            if command_exists mmdc; then
+                print_info "Using Mermaid CLI (mmdc) to convert $input_file"
+                mmdc -i "$input_file" -o "$output_path" -w 1200
+            else
+                print_error "Mermaid CLI (mmdc) not found. Install with 'npm install -g @mermaid-js/mermaid-cli'"
+                exit 1
+            fi
+            ;;
+        puml|plantuml)
+            if command_exists plantuml; then
+                print_info "Using PlantUML to convert $input_file"
+                plantuml -t${output_format} "$input_file" -o "$output_dir"
+                # Move the generated file to the correct name
+                local generated_file="${output_dir}/$(get_filename_without_ext "$input_file").${output_format}"
+                mv "${output_dir}/$(get_filename_without_ext "$input_file").${output_format}" "$output_path" 2>/dev/null || true
+            else
+                print_error "PlantUML not found. Install with 'brew install plantuml' or download from http://plantuml.com/download"
+                exit 1
+            fi
+            ;;
+        dot|gv)
+            if command_exists dot; then
+                print_info "Using Graphviz (dot) to convert $input_file"
+                dot -T${output_format} "$input_file" -o "$output_path"
+            else
+                print_error "Graphviz (dot) not found. Install with 'brew install graphviz'"
+                exit 1
+            fi
+            ;;
+        zenuml)
+            print_warn "ZenUML conversion not directly supported. Please use the diagramly-kit library to convert."
+            print_info "Looking for ZenUML in the project..."
+            if [[ -f "./dist/index.js" ]]; then
+                node ./dist/index.js convert-zenuml "$input_file" "$output_path"
+            else
+                print_error "diagramly-kit not found. Please install and build the project first."
+                exit 1
+            fi
+            ;;
+        drawio|xml)
+            print_warn "DrawIO conversion not directly supported. Please use draw.io CLI or online service."
+            print_error "DrawIO to image conversion requires additional setup. Manual conversion needed."
+            exit 1
+            ;;
+        *)
+            print_error "Unsupported file type: $(get_file_extension "$input_file")"
+            print_info "Supported types: mmd, mermaid, puml, plantuml, dot, gv, zenuml, drawio, xml"
+            exit 1
+            ;;
+    esac
+    
+    if [[ -f "$output_path" ]]; then
+        print_info "Successfully converted $input_file to $output_path"
+        print_info "File size: $(du -h "$output_path" | cut -f1)"
+    else
+        print_error "Conversion failed - output file was not created"
+        exit 1
+    fi
+}
+
+# Parse command line arguments
+if [[ $# -eq 0 ]] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
+    show_help
+    exit 0
+fi
+
+INPUT_FILE="$1"
+OUTPUT_FORMAT="${2:-$DEFAULT_OUTPUT_FORMAT}"
+OUTPUT_DIR="${3:-$DEFAULT_OUTPUT_DIR}"
+
+# Validate input file
+if [[ ! -f "$INPUT_FILE" ]]; then
+    print_error "Input file does not exist: $INPUT_FILE"
+    exit 1
+fi
+
+# Validate output format
+if [[ "$OUTPUT_FORMAT" != "png" ]] && [[ "$OUTPUT_FORMAT" != "svg" ]] && [[ "$OUTPUT_FORMAT" != "pdf" ]]; then
+    print_warn "Output format '$OUTPUT_FORMAT' not standard. Using default 'png'."
+    OUTPUT_FORMAT="png"
+fi
+
+# Validate required tools based on file type
+EXTENSION=$(get_file_extension "$INPUT_FILE")
+case "$EXTENSION" in
+    mmd|mermaid)
+        if ! command_exists mmdc; then
+            print_error "Mermaid CLI (mmdc) is required for .mmd/.mermaid files"
+            print_info "Install with: npm install -g @mermaid-js/mermaid-cli"
+            exit 1
+        fi
+        ;;
+    puml|plantuml)
+        if ! command_exists plantuml; then
+            print_error "PlantUML is required for .puml/.plantuml files"
+            print_info "Install with: brew install plantuml"
+            exit 1
+        fi
+        ;;
+    dot|gv)
+        if ! command_exists dot; then
+            print_error "Graphviz (dot) is required for .dot/.gv files"
+            print_info "Install with: brew install graphviz"
+            exit 1
+        fi
+        ;;
+esac
+
+# Perform the conversion
+convert_dsl_to_image "$INPUT_FILE" "$OUTPUT_FORMAT" "$OUTPUT_DIR"
+
+print_info "Conversion completed successfully!"
