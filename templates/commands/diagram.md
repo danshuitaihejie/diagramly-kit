@@ -1,5 +1,5 @@
 ---
-description: Generate an image from DSL diagram code based on user requirements. Supports Mermaid, PlantUML, Graphviz, ZenUML, DrawIO, Markmap, and others. Uses local tools when available, with Kroki.io service as fallback.
+description: Analyze user intent and generate both DSL and PNG diagram files in a single timestamped directory. Supports Mermaid, PlantUML, Graphviz, ZenUML, DrawIO, Markmap, and others. Uses local tools when available, with Kroki.io service as fallback.
 scripts:
   sh: scripts/bash/diagram-dsl-to-image.sh
   ps: scripts/powershell/diagram-dsl-to-image.ps1
@@ -15,17 +15,18 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
-The user has provided requirements for a diagram/image. Your task is to:
-1. Determine the best diagram type based on user requirements
-2. Generate appropriate DSL code using the templates in `/templates/dsl/`
-3. Convert the DSL to an image using the appropriate script
-4. Present the resulting image to the user
+The user has provided requirements for a diagram. Your task is to analyze their intent and create both the DSL and image files. You will:
+1. Analyze user intent to determine diagram type and simple description
+2. Create a single timestamped directory
+3. Generate appropriate DSL code using the templates in `/templates/dsl/`
+4. Convert the DSL to an image using the appropriate script
+5. Present the resulting image to the user
 
 Follow this execution flow:
 
-1. **Analyze User Requirements**: Parse the user input to understand what kind of diagram they want to create.
+1. **Analyze User Intent**: Parse the user input to understand what kind of diagram they want to create and generate a simple description.
    - Identify the purpose: flowchart, sequence diagram, UML diagram, mind map, etc.
-   - Determine the content: components, relationships, processes, etc.
+   - Determine a simple, concise description of the diagram intent
    - Consider the audience and context
 
 2. **Select Diagram Language and Type**: Choose the most appropriate diagram language from:
@@ -42,30 +43,32 @@ Follow this execution flow:
    - Fill in the DSL based on user requirements
    - Validate the generated DSL is syntactically correct for the chosen format
 
-4. **Create DSL File**: Save the generated DSL code to an appropriately named file:
-   - Use the correct extension: `.mmd` for Mermaid, `.puml` for PlantUML, `.dot` for Graphviz, etc.
-   - Place the file in an appropriate directory like `/diagrams/generated/`
-   - Name the DSL file to match the expected image output pattern:
-     - For single diagram: `{{yyyy-MM-dd-HHMMSSff}}-{{description}}.{{extension}}`
-     - For multiple diagrams: `{{yyyy-MM-dd-HHMMSSff}}-{{description}}-{{number}}.{{extension}}`
-   - Example: `2025-01-15-14302256-flowchart.mmd`
+4. **Analyze User Intent and Create Single Directory**: 
+   - First analyze the user's intent to determine the diagram type and simple description
+   - Create a single timestamped directory: `.diagramly/{{yyyy-MM-dd-HHMMSSff}}/`
+   - No other directories should be created
 
-5. **Convert to Image**: Execute the appropriate script to convert the DSL file to an image:
+5. **Generate DSL File**: Save the generated DSL code to the timestamped directory with the naming pattern:
+   - Place the file in the single directory: `.diagramly/{{yyyy-MM-dd-HHMMSSff}}/`
+   - Name the DSL file using the pattern: `{{diagram_type}}-{{simple_description}}.dsl`
+   - Use the actual detected diagram type (mermaid, plantuml, graphviz, etc.) and simple description from user intent
+   - Example: `.diagramly/2025-01-15-14302256/flowchart-user-journey.dsl`
+
+6. **Convert to Image**: Execute the appropriate script to convert the DSL file to an image in the same directory:
    - Run `{SCRIPT}` with arguments: `[DSL_FILE_PATH] [OUTPUT_FORMAT] [OUTPUT_DIR]`
-   - Default OUTPUT_FORMAT: "png" 
-   - Default OUTPUT_DIR: ".diagramly/images" (create directory if it doesn't exist)
-   - For single diagram: Save as `.diagramly/images/{{yyyy-MM-dd-HHMMSSff}}-{{description}}.png`
-   - For multiple diagrams: Save as `.diagramly/images/{{yyyy-MM-dd-HHMMSSff}}-{{description}}-{{number}}.png`
-   - Example: `{SCRIPT} diagrams/generated/flow.mmd png .diagramly/images`
+   - OUTPUT_FORMAT: "png" 
+   - OUTPUT_DIR: Same directory as the DSL file (the timestamped directory)
+   - Name the image file using the pattern: `{{diagram_type}}-{{simple_description}}.png`
+   - Example: `{SCRIPT} .diagramly/2025-01-15-14302256/flowchart-user-journey.dsl png .diagramly/2025-01-15-14302256/`
    - Wait for successful completion before proceeding
 
-6. **Validate Output**: Ensure the image was generated successfully and is accessible.
-   - Verify the image file exists at the expected location
+7. **Validate Output**: Ensure both files were generated successfully in the timestamped directory.
+   - Verify both the `.dsl` and `.png` files exist in the same directory
    - Check that the image file has appropriate size (not zero bytes)
 
-7. **Present Result**: Show the generated image to the user and provide:
+8. **Present Result**: Show the generated image to the user and provide:
    - The DSL code that was generated (for reference)
-   - Information about the image format and location (.diagramly/images/)
+   - Information about the image format and location (`.diagramly/{{yyyy-MM-dd-HHMMSSff}}/`)
    - Options for modifications if needed
 
 ## Diagram Generation Process
@@ -111,11 +114,11 @@ Follow this execution flow:
 
 ### For Bash (sh) users:
 - Command: `{SCRIPT} [input_file] [output_format] [output_dir]`
-- Example: `{SCRIPT} diagrams/generated/diagram.mmd png .diagramly/images`
+- Example: `{SCRIPT} .diagramly/2025-01-15-14302256/flowchart-user-journey.dsl png .diagramly/2025-01-15-14302256/`
 
 ### For PowerShell (ps) users:
 - Command: `{SCRIPT} -InputFile "[input_file]" [-OutputFormat "[output_format]"] [-OutputDir "[output_dir]"]`
-- Example: `{SCRIPT} -InputFile "diagrams/generated/diagram.mmd" -OutputFormat "png" -OutputDir ".diagramly/images"`
+- Example: `{SCRIPT} -InputFile ".diagramly/2025-01-15-14302256/flowchart-user-journey.dsl" -OutputFormat "png" -OutputDir ".diagramly/2025-01-15-14302256/"`
 
 ## Error Handling and Validation
 
@@ -145,11 +148,11 @@ Follow this execution flow:
   - Both bash and PowerShell scripts now use Kroki.io service as fallback when local tools aren't available
 
 - **Output Validation**:
-  - After script execution, verify the image file was created in the expected output directory (.diagramly/images/)
-  - Check that the image file follows the naming convention: `{{yyyy-MM-dd-HHMMSSff}}-{{description}}.png` or `{{yyyy-MM-dd-HHMMSSff}}-{{description}}-{{number}}.png`
+  - After script execution, verify both files were created in the expected timestamped directory (.diagramly/{{yyyy-MM-dd-HHMMSSff}}/)
+  - Check that both files follow the naming convention: `{{diagram_type}}-{{simple_description}}.dsl` and `{{diagram_type}}-{{simple_description}}.png`
   - Check that the image file is not zero bytes and contains valid image data
   - If image generation fails, report the issue and suggest alternatives (different output format, different diagram structure)
-  - If the .diagramly/images directory doesn't exist, create it before running the conversion script
+  - If the timestamped directory doesn't exist, create it before running the conversion script
 
 - **Fallback Options**:
   - If local tools fail, consider using online services (like Kroki.io) as a fallback
