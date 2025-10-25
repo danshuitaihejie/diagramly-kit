@@ -229,6 +229,7 @@ Essential commands for the Spec-Driven Development workflow:
 | `/diagramlykit.specify`       | Define what you want to build (requirements and user stories)        |
 | `/diagramlykit.plan`          | Create technical implementation plans with your chosen tech stack     |
 | `/diagramlykit.tasks`         | Generate actionable task lists for implementation                     |
+| `/diagramlykit.diagram`       | Generate diagrams from DSL code based on user requirements (Mermaid, PlantUML, Graphviz, etc.) |
 | `/diagramlykit.implement`     | Execute all tasks to build the feature according to the plan         |
 
 #### Optional Commands
